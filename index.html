@@ -490,7 +490,7 @@
   </div>
   <div class="state-loading" id="loadingState" style="display:none;">
     <div class="spinner"></div>
-    <span style="color:var(--text-muted);font-size:0.88rem;">Searching…</span>
+    <span id="loadingMsg" style="color:var(--text-muted);font-size:0.88rem;">Searching…</span>
   </div>
   <div class="state-error" id="errorState" style="display:none;">
     <div class="err-icon">&#9888;</div>
@@ -1217,38 +1217,53 @@ async function doSearch(q) {
     return;
   }
 
-  showLoading();
-  errorState.style.display = 'none';
+  const MAX_RETRIES = 2;
+  for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+    if (myToken !== searchToken) return;
 
-  // Cancel any previous in-flight race, start a new one
-  if (inflightCtrl) { try { inflightCtrl.abort(); } catch {} }
-  const ctrl = new AbortController();
-  inflightCtrl = ctrl;
-  const timer  = setTimeout(() => ctrl.abort(), 15000);
+    showLoading(attempt === 0 ? 'Searching\u2026' : `Retrying\u2026 (${attempt}/${MAX_RETRIES})`);
+    errorState.style.display = 'none';
 
-  try {
-    const data = await raceSources(q, ctrl.signal);
-    if (myToken !== searchToken) return; // newer search took over
+    if (inflightCtrl) { try { inflightCtrl.abort(); } catch {} }
+    const ctrl = new AbortController();
+    inflightCtrl = ctrl;
+    const timer = setTimeout(() => ctrl.abort(), 15000);
 
-    if (!data) {
-      showError('All upstream Bunkr sources failed. Try again in a moment.');
+    let data = null;
+    let fatalError = null;
+
+    try {
+      data = await raceSources(q, ctrl.signal);
+    } catch (e) {
+      if (myToken !== searchToken) return;
+      if (/Failed to fetch|NetworkError/i.test(e.message)) {
+        showError('Couldn\u2019t reach your worker. Check the URL in Settings or re-run setup.');
+        return;
+      }
+      if (e.name !== 'AbortError') { fatalError = e.message || 'Unknown error.'; }
+      // AbortError falls through to retry
+    } finally {
+      clearTimeout(timer);
+      if (inflightCtrl === ctrl) inflightCtrl = null;
+    }
+
+    if (myToken !== searchToken) return;
+    if (fatalError) { showError(fatalError); return; }
+
+    if (data) {
+      resultCache.set(q, data);
+      applyResults(data);
       return;
     }
-    resultCache.set(q, data);
-    applyResults(data);
-  } catch (e) {
-    if (myToken !== searchToken) return; // stale — swallow
-    if (e.name === 'AbortError') {
-      showError('Search timed out after 15s. Try again in a moment.');
-    } else if (/Failed to fetch|NetworkError/i.test(e.message)) {
-      showError('Couldn\u2019t reach your worker. Check the URL in Settings or re-run setup.');
-    } else {
-      showError(e.message || 'Unknown error.');
+
+    // null = all sources failed/timed out — retry after brief pause
+    if (attempt < MAX_RETRIES) {
+      await new Promise(r => setTimeout(r, 800));
     }
-  } finally {
-    clearTimeout(timer);
-    if (inflightCtrl === ctrl) inflightCtrl = null;
   }
+
+  if (myToken !== searchToken) return;
+  showError('Search sources are unavailable. Please try again in a moment.');
 }
 
 // ─────────────────────────────────────────────
@@ -1634,11 +1649,13 @@ function showEmpty() {
   errorState.style.display    = 'none';
   resultsGrid.style.display   = 'none';
 }
-function showLoading() {
-  emptyState.style.display    = 'none';
-  loadingState.style.display  = 'flex';
-  errorState.style.display    = 'none';
-  resultsGrid.style.display   = 'none';
+function showLoading(msg = 'Searching\u2026') {
+  emptyState.style.display   = 'none';
+  loadingState.style.display = 'flex';
+  errorState.style.display   = 'none';
+  resultsGrid.style.display  = 'none';
+  const msgEl = document.getElementById('loadingMsg');
+  if (msgEl) msgEl.textContent = msg;
 }
 function hideLoading() {
   loadingState.style.display  = 'none';
