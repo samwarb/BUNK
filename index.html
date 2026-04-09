@@ -805,7 +805,17 @@ function init() {
   if (last) {
     searchInput.value = last;
     doSearch(last);
+  } else {
+    warmUpBackend(); // No pending search — proactively wake the backend now
   }
+}
+
+// Silently ping the search backend on page load so it's warm by the time the
+// user types their first query. Fire-and-forget — result is irrelevant.
+function warmUpBackend() {
+  if (!settings.workerUrl) return;
+  fetch(proxyUrl('https://bunkrarchive.pythonanywhere.com/api/search?q=a'))
+    .catch(() => {});
 }
 
 // ─────────────────────────────────────────────
@@ -1117,7 +1127,7 @@ function applyResults(data) {
 // blocking the whole race until the global 15 s abort fires.
 async function trySource(upstream, signal) {
   const localCtrl = new AbortController();
-  const localTimer = setTimeout(() => localCtrl.abort(), 7000); // 7 s per source
+  const localTimer = setTimeout(() => localCtrl.abort(), 11000); // 11 s per source
   const onAbort = () => localCtrl.abort();
   signal.addEventListener('abort', onAbort, { once: true });
   try {
@@ -1227,7 +1237,7 @@ async function doSearch(q) {
     if (inflightCtrl) { try { inflightCtrl.abort(); } catch {} }
     const ctrl = new AbortController();
     inflightCtrl = ctrl;
-    const timer = setTimeout(() => ctrl.abort(), 8000);
+    const timer = setTimeout(() => ctrl.abort(), 12000);
 
     let data = null;
     let fatalError = null;
