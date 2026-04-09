@@ -1117,7 +1117,7 @@ function applyResults(data) {
 // blocking the whole race until the global 15 s abort fires.
 async function trySource(upstream, signal) {
   const localCtrl = new AbortController();
-  const localTimer = setTimeout(() => localCtrl.abort(), 10000); // 10 s per source
+  const localTimer = setTimeout(() => localCtrl.abort(), 7000); // 7 s per source
   const onAbort = () => localCtrl.abort();
   signal.addEventListener('abort', onAbort, { once: true });
   try {
@@ -1217,7 +1217,7 @@ async function doSearch(q) {
     return;
   }
 
-  const MAX_RETRIES = 2;
+  const MAX_RETRIES = 4;
   for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
     if (myToken !== searchToken) return;
 
@@ -1227,7 +1227,7 @@ async function doSearch(q) {
     if (inflightCtrl) { try { inflightCtrl.abort(); } catch {} }
     const ctrl = new AbortController();
     inflightCtrl = ctrl;
-    const timer = setTimeout(() => ctrl.abort(), 15000);
+    const timer = setTimeout(() => ctrl.abort(), 8000);
 
     let data = null;
     let fatalError = null;
@@ -1258,7 +1258,7 @@ async function doSearch(q) {
 
     // null = all sources failed/timed out — retry after brief pause
     if (attempt < MAX_RETRIES) {
-      await new Promise(r => setTimeout(r, 800));
+      await new Promise(r => setTimeout(r, 500));
     }
   }
 
