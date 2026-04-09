@@ -1112,15 +1112,45 @@ function applyResults(data) {
   renderResults();
 }
 
-// Fetch a single upstream through the proxy. Returns parsed JSON or null.
+// Fetch a single upstream through the proxy with a per-source timeout.
+// This prevents a single hung upstream (e.g. a sleeping free-tier server) from
+// blocking the whole race until the global 15 s abort fires.
 async function trySource(upstream, signal) {
+  const localCtrl = new AbortController();
+  const localTimer = setTimeout(() => localCtrl.abort(), 10000); // 10 s per source
+  const onAbort = () => localCtrl.abort();
+  signal.addEventListener('abort', onAbort, { once: true });
   try {
-    const res = await fetch(proxyUrl(upstream), { signal });
+    const res = await fetch(proxyUrl(upstream), { signal: localCtrl.signal });
     if (!res.ok) return null;
     const data = await res.json().catch(() => null);
     return isSearchShape(data) ? data : null;
   } catch {
-    return null; // AbortError / network error — race keeps going with the rest
+    return null;
+  } finally {
+    clearTimeout(localTimer);
+    signal.removeEventListener('abort', onAbort);
+  }
+}
+
+// Try an upstream directly (no proxy, 5 s timeout).
+// A CORS rejection is instant and safe — it just returns null and the race
+// moves on. If CORS is actually supported, results come back in <1 s.
+async function tryDirect(upstream, signal) {
+  const localCtrl = new AbortController();
+  const localTimer = setTimeout(() => localCtrl.abort(), 5000);
+  const onAbort = () => localCtrl.abort();
+  signal.addEventListener('abort', onAbort, { once: true });
+  try {
+    const res = await fetch(upstream, { signal: localCtrl.signal });
+    if (!res.ok) return null;
+    const data = await res.json().catch(() => null);
+    return isSearchShape(data) ? data : null;
+  } catch {
+    return null;
+  } finally {
+    clearTimeout(localTimer);
+    signal.removeEventListener('abort', onAbort);
   }
 }
 
@@ -1128,7 +1158,11 @@ async function trySource(upstream, signal) {
 // source responds empty, we return the first empty one so the caller can
 // still show "no results". If every source fails, returns null.
 async function raceSources(q, signal) {
-  const attempts = UPSTREAM_SOURCES.map(make => trySource(make(q), signal));
+  const directUrl = `https://bunkrarchive.pythonanywhere.com/api/search?q=${encodeURIComponent(q)}`;
+  const attempts = [
+    tryDirect(directUrl, signal),                                    // fast path — no proxy needed if CORS is open
+    ...UPSTREAM_SOURCES.map(make => trySource(make(q), signal)),     // proxy path — all sources with per-source timeouts
+  ];
   return new Promise((resolve, reject) => {
     if (signal.aborted) return reject(new DOMException('Aborted', 'AbortError'));
     const onAbort = () => reject(new DOMException('Aborted', 'AbortError'));
