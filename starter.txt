@@ -1,0 +1,9 @@
+I am wanting to create a search engine for Bunkr similar to sites like https://bunkr-albums.io/ and https://bunkr-explorer.pages.dev/.
+
+
+
+https://bunkr-explorer.pages.dev/ has better features, as it provides better results, (both by album name and file name and fuzzy search etc) but does seem slow to load.
+
+
+
+Can you create a custom html that will do this, adding any extra features in, whislt still remaining quick
