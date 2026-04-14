@@ -1054,10 +1054,10 @@ function flashButton(btn, html) {
 // Upstream Bunkr endpoints — raced in parallel, first non-empty wins.
 // Add new mirrors here and they'll work instantly with no worker redeploy.
 const UPSTREAM_SOURCES = [
-  q => `https://bunkrarchive.pythonanywhere.com/api/search?q=${encodeURIComponent(q)}`,
   q => `https://bunkr-albums.io/api/search?q=${encodeURIComponent(q)}`,
   q => `https://bunkr-albums.io/api/albums?q=${encodeURIComponent(q)}`,
   q => `https://bunkr-albums.io/api/albums?search=${encodeURIComponent(q)}`,
+  q => `https://bunkrarchive.pythonanywhere.com/api/search?q=${encodeURIComponent(q)}`,
   q => `https://bunkr-explorer.pages.dev/api/search?q=${encodeURIComponent(q)}`,
 ];
 
@@ -1070,13 +1070,17 @@ function hitCount(data) {
   return (data.album_results?.length || 0)
        + (data.file_results?.length  || 0)
        + (data.albums?.length        || 0)
-       + (data.files?.length         || 0);
+       + (data.files?.length         || 0)
+       + (data.results?.length       || 0)
+       + (data.items?.length         || 0);
 }
 
 function isSearchShape(data) {
-  return !!data && (
+  if (!data) return false;
+  return (
     Array.isArray(data.album_results) || Array.isArray(data.file_results) ||
-    Array.isArray(data.albums)        || Array.isArray(data.files)
+    Array.isArray(data.albums)        || Array.isArray(data.files)        ||
+    Array.isArray(data.results)       || Array.isArray(data.items)
   );
 }
 
@@ -1095,8 +1099,13 @@ async function fetchWithTimeout(url, ms = 15000) {
 }
 
 function applyResults(data) {
-  const albumRaw = data.album_results || data.albums || [];
-  const fileRaw  = data.file_results  || data.files  || [];
+  // Support { album_results, file_results }, { albums, files }, or a flat { results } / { items }
+  // array where each entry carries a `type` field distinguishing albums from files.
+  const flatRaw  = data.results || data.items || [];
+  const albumRaw = data.album_results || data.albums
+    || flatRaw.filter(r => r.type === 'album' || r.album_title);
+  const fileRaw  = data.file_results  || data.files
+    || flatRaw.filter(r => r.type === 'file'  || (!r.album_title && r.name));
 
   allResults = [
     ...albumRaw.map(a => ({ type: 'album', ...a })),
@@ -1158,10 +1167,13 @@ async function tryDirect(upstream, signal) {
 // source responds empty, we return the first empty one so the caller can
 // still show "no results". If every source fails, returns null.
 async function raceSources(q, signal) {
-  const directUrl = `https://bunkrarchive.pythonanywhere.com/api/search?q=${encodeURIComponent(q)}`;
   const attempts = [
-    tryDirect(directUrl, signal),                                    // fast path — no proxy needed if CORS is open
-    ...UPSTREAM_SOURCES.map(make => trySource(make(q), signal)),     // proxy path — all sources with per-source timeouts
+    // Direct CORS fast path — try every upstream without the proxy.
+    // A CORS rejection is instant, so this adds no latency when blocked.
+    // If any upstream has CORS open, this wins immediately without touching the worker.
+    ...UPSTREAM_SOURCES.map(make => tryDirect(make(q), signal)),
+    // Proxy path — all sources via the Cloudflare Worker (fallback when direct CORS is blocked)
+    ...UPSTREAM_SOURCES.map(make => trySource(make(q), signal)),
   ];
   return new Promise((resolve, reject) => {
     if (signal.aborted) return reject(new DOMException('Aborted', 'AbortError'));
