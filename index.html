@@ -898,7 +898,7 @@ function bindEvents() {
     }
 
     showHistory(q);
-    debounceTimer = setTimeout(() => doSearch(q), 400);
+    debounceTimer = setTimeout(() => doSearch(q), 800);
   });
 
   searchInput.addEventListener('focus', () => {
@@ -1451,7 +1451,6 @@ async function trySource(source, q, signal, viaProxy) {
 }
 async function searchAllSources(q, signal) {
   const attempts = [
-    ...UPSTREAM_SOURCES.map(source => trySource(source, q, signal, false)),
     ...UPSTREAM_SOURCES.map(source => trySource(source, q, signal, true)),
   ];
 
@@ -1531,6 +1530,11 @@ function applyResults(data) {
 
 async function doSearch(q) {
   if (!q) return;
+
+  if (q.length < 3) {
+    showError('Please enter at least 3 characters. Short searches are unreliable.');
+    return;
+  }
 
   const myToken = ++searchToken;
 
