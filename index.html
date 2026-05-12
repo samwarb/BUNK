@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Bunkr Search</title>
+
   <style>
     :root {
       --bg: #0f0f13;
@@ -14,20 +15,18 @@
       --border: #2e2e3e;
       --border-focus: #7c5cbf;
       --text: #e2e2ee;
-      --text-muted: #7070a0;
+      --text-muted: #7777a8;
       --text-dim: #4a4a6a;
       --accent: #7c5cbf;
       --accent-light: #9a7de0;
-      --accent-dim: rgba(124,92,191,0.15);
+      --accent-dim: rgba(124, 92, 191, 0.15);
       --tag-album: #1a3a2a;
       --tag-album-text: #4ade80;
       --tag-file: #1a2a3a;
       --tag-file-text: #60a5fa;
       --danger: #e05252;
-      --warning: #d4a017;
+      --shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
       --radius: 10px;
-      --radius-sm: 6px;
-      --shadow: 0 4px 16px rgba(0,0,0,0.5);
       --transition: 0.18s ease;
     }
 
@@ -41,43 +40,70 @@
       --text: #1a1a2e;
       --text-muted: #6060a0;
       --text-dim: #9090b0;
-      --accent-dim: rgba(124,92,191,0.1);
-      --shadow: 0 4px 16px rgba(0,0,0,0.1);
+      --accent-dim: rgba(124, 92, 191, 0.1);
+      --shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     body {
       background: var(--bg);
       color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
       min-height: 100vh;
-      transition: background var(--transition), color var(--transition);
     }
 
-    a { color: inherit; text-decoration: none; }
-    button { cursor: pointer; font-family: inherit; }
+    button,
+    input,
+    select {
+      font-family: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
 
     header {
-      position: sticky; top: 0; z-index: 100;
+      position: sticky;
+      top: 0;
+      z-index: 50;
       background: var(--bg-header);
       border-bottom: 1px solid var(--border);
       padding: 12px 20px;
-      display: flex; align-items: center; gap: 16px;
-      backdrop-filter: blur(12px);
-      box-shadow: 0 2px 16px rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 2px 16px rgba(0, 0, 0, 0.3);
     }
 
     .logo {
-      font-size: 1.4rem; font-weight: 800; letter-spacing: -0.5px;
-      color: var(--accent-light); white-space: nowrap; flex-shrink: 0;
-      display: flex; align-items: center; gap: 6px;
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--accent-light);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
     }
 
-    .logo span { color: var(--text); }
+    .logo span {
+      color: var(--text);
+    }
 
     .search-wrap {
-      flex: 1; display: flex; align-items: center; gap: 8px;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
       background: var(--bg-input);
       border: 1.5px solid var(--border);
       border-radius: 24px;
@@ -91,106 +117,189 @@
     }
 
     #searchInput {
-      flex: 1; background: none; border: none; outline: none;
-      color: var(--text); font-size: 1rem;
+      flex: 1;
+      background: none;
+      border: none;
+      outline: none;
+      color: var(--text);
+      font-size: 1rem;
       min-width: 0;
     }
 
-    #searchInput::placeholder { color: var(--text-muted); }
+    #searchInput::placeholder {
+      color: var(--text-muted);
+    }
 
-    .header-btns { display: flex; gap: 8px; flex-shrink: 0; }
+    .header-btns {
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+    }
 
     .icon-btn {
-      width: 36px; height: 36px; border-radius: 50%;
-      background: var(--bg-input); border: 1px solid var(--border);
-      color: var(--text-muted); display: flex; align-items: center; justify-content: center;
-      font-size: 1.05rem; transition: all var(--transition);
-    }
-
-    .icon-btn:hover { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
-
-    .controls-bar {
-      display: flex; align-items: center; gap: 12px;
-      padding: 10px 20px; border-bottom: 1px solid var(--border);
-      background: var(--bg-header); flex-wrap: wrap;
-    }
-
-    .tabs { display: flex; gap: 4px; }
-
-    .tab {
-      padding: 5px 14px; border-radius: 16px; font-size: 0.82rem; font-weight: 600;
-      background: none; border: 1px solid transparent; color: var(--text-muted);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
       transition: all var(--transition);
     }
 
-    .tab:hover { background: var(--accent-dim); color: var(--accent); }
-    .tab.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent-light); }
-
-    .tab .count {
-      display: inline-block; margin-left: 5px; font-size: 0.72rem;
-      background: var(--border); padding: 1px 6px; border-radius: 8px; color: var(--text-muted);
+    .icon-btn:hover {
+      background: var(--accent-dim);
+      border-color: var(--accent);
+      color: var(--accent-light);
     }
 
-    .tab.active .count { background: var(--accent); color: #fff; }
+    .controls-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 20px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-header);
+      flex-wrap: wrap;
+    }
 
-    .controls-right { display: flex; gap: 8px; margin-left: auto; align-items: center; }
+    .tabs {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    .tab {
+      padding: 5px 14px;
+      border-radius: 16px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      background: none;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      transition: all var(--transition);
+    }
+
+    .tab:hover {
+      background: var(--accent-dim);
+      color: var(--accent-light);
+    }
+
+    .tab.active {
+      background: var(--accent-dim);
+      border-color: var(--accent);
+      color: var(--accent-light);
+    }
+
+    .count {
+      display: inline-block;
+      margin-left: 5px;
+      font-size: 0.72rem;
+      background: var(--border);
+      padding: 1px 6px;
+      border-radius: 8px;
+      color: var(--text-muted);
+    }
+
+    .tab.active .count {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .controls-right {
+      display: flex;
+      gap: 8px;
+      margin-left: auto;
+      align-items: center;
+    }
 
     .sort-select {
-      background: var(--bg-input); border: 1px solid var(--border);
-      border-radius: 6px; padding: 5px 10px;
-      color: var(--text); font-size: 0.82rem;
-      transition: border-color var(--transition);
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 5px 10px;
+      color: var(--text);
+      font-size: 0.82rem;
     }
 
-    .sort-select:focus { outline: none; border-color: var(--accent); }
-
-    main { padding: 20px; max-width: 1600px; margin: 0 auto; }
-
-    .state-empty {
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      min-height: 55vh; gap: 16px; text-align: center; color: var(--text-muted);
+    main {
+      padding: 20px;
+      max-width: 1600px;
+      margin: 0 auto;
     }
 
-    .state-empty .big-icon { font-size: 4rem; opacity: 0.3; }
-    .state-empty h2 { font-size: 1.3rem; font-weight: 600; color: var(--text-dim); }
-    .state-empty p { font-size: 0.88rem; max-width: 400px; line-height: 1.6; }
-    .state-empty .shortcuts { margin-top: 8px; font-size: 0.8rem; }
+    .state-empty,
+    .state-loading,
+    .state-error {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 55vh;
+      gap: 14px;
+      text-align: center;
+      color: var(--text-muted);
+    }
+
+    .big-icon {
+      font-size: 4rem;
+      opacity: 0.3;
+    }
+
+    .state-empty h2 {
+      color: var(--text-dim);
+      font-size: 1.3rem;
+    }
+
+    .state-empty p,
+    .state-error p {
+      max-width: 650px;
+      line-height: 1.6;
+      font-size: 0.9rem;
+    }
 
     .kbd {
-      display: inline-block; padding: 2px 7px; border-radius: 4px;
-      background: var(--bg-card); border: 1px solid var(--border);
-      font-family: monospace; font-size: 0.75rem; color: var(--text-muted);
-    }
-
-    .state-loading {
-      display: flex; align-items: center; justify-content: center;
-      min-height: 55vh; flex-direction: column; gap: 16px;
+      display: inline-block;
+      padding: 2px 7px;
+      border-radius: 4px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      font-family: monospace;
+      font-size: 0.75rem;
+      color: var(--text-muted);
     }
 
     .spinner {
-      width: 40px; height: 40px; border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
       border: 3px solid var(--border);
       border-top-color: var(--accent);
       animation: spin 0.8s linear infinite;
     }
 
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    .state-error {
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      min-height: 30vh; gap: 12px; text-align: center;
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
     }
 
-    .state-error .err-icon { font-size: 2.5rem; }
-    .state-error h3 { color: var(--danger); }
-    .state-error p { color: var(--text-muted); font-size: 0.85rem; max-width: 600px; line-height: 1.6; }
+    .state-error h3 {
+      color: var(--danger);
+    }
 
     .retry-btn {
-      padding: 8px 20px; background: var(--accent); border: none; border-radius: 6px;
-      color: #fff; font-size: 0.85rem; font-weight: 600; transition: background var(--transition);
+      padding: 8px 20px;
+      background: var(--accent);
+      border: none;
+      border-radius: 6px;
+      color: #fff;
+      font-size: 0.85rem;
+      font-weight: 600;
     }
-
-    .retry-btn:hover { background: var(--accent-light); }
 
     .results-grid {
       display: grid;
@@ -204,7 +313,8 @@
       border-radius: var(--radius);
       overflow: hidden;
       transition: all var(--transition);
-      display: flex; flex-direction: column;
+      display: flex;
+      flex-direction: column;
       position: relative;
     }
 
@@ -217,1844 +327,1440 @@
 
     .card-thumb {
       height: 120px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 2.5rem; position: relative; overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      position: relative;
+      overflow: hidden;
       background: var(--bg-input);
     }
 
-    .card-thumb-inner { opacity: 0.4; }
+    .card-thumb-inner {
+      opacity: 0.45;
+    }
 
     .thumb-overlay {
-      position: absolute; inset: 0;
-      background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.6));
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, transparent 45%, rgba(0, 0, 0, 0.6));
     }
 
     .card-type-badge {
-      position: absolute; top: 8px; right: 8px;
-      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.5px;
-      padding: 2px 8px; border-radius: 10px; text-transform: uppercase;
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      text-transform: uppercase;
     }
 
-    .badge-album { background: var(--tag-album); color: var(--tag-album-text); }
-    .badge-file  { background: var(--tag-file);  color: var(--tag-file-text);  }
+    .badge-album {
+      background: var(--tag-album);
+      color: var(--tag-album-text);
+    }
 
-    .fav-btn-overlay {
-      position: absolute; top: 8px; left: 8px;
-      width: 28px; height: 28px; border-radius: 50%;
-      background: rgba(0,0,0,0.5); border: none;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.85rem; opacity: 0;
-      transition: opacity var(--transition), background var(--transition);
+    .badge-file {
+      background: var(--tag-file);
+      color: var(--tag-file-text);
+    }
+
+    .fav-btn {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.55);
+      border: none;
       color: #aaa;
+      opacity: 0;
+      transition: opacity var(--transition);
+      z-index: 2;
     }
 
-    .card:hover .fav-btn-overlay { opacity: 1; }
-    .fav-btn-overlay.is-fav { opacity: 1; color: #f5a623; }
-    .fav-btn-overlay.is-fav, .fav-btn-overlay:hover { background: rgba(0,0,0,0.7); }
+    .card:hover .fav-btn,
+    .fav-btn.is-fav {
+      opacity: 1;
+    }
 
-    .card-body { padding: 12px 14px; flex: 1; display: flex; flex-direction: column; gap: 6px; }
+    .fav-btn.is-fav {
+      color: #f5a623;
+    }
+
+    .card-body {
+      padding: 12px 14px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
 
     .card-title {
-      font-size: 0.88rem; font-weight: 600; line-height: 1.35;
-      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
-      overflow: hidden; word-break: break-word;
+      font-size: 0.9rem;
+      font-weight: 650;
+      line-height: 1.35;
+      word-break: break-word;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
 
-    .card-files {
-      font-size: 0.75rem; color: var(--text-muted);
-      display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
+    .card-meta {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
     }
 
-    .card-files span { display: flex; align-items: center; gap: 3px; }
-
-    .card-matching-files {
-      display: flex; flex-direction: column; gap: 3px;
+    .matching-files {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
       margin-top: 4px;
     }
 
-    .matching-file-link {
+    .matching-file {
       display: block;
-      font-size: 0.72rem; color: var(--tag-file-text);
-      padding: 4px 7px; border-radius: 4px;
-      background: rgba(96,165,250,0.06);
-      border: 1px solid rgba(96,165,250,0.15);
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-      transition: background var(--transition), border-color var(--transition), color var(--transition);
-      text-decoration: none;
-    }
-
-    .matching-file-link:hover {
-      background: rgba(96,165,250,0.18);
-      border-color: rgba(96,165,250,0.4);
-      color: #93c5fd;
-    }
-
-    .matching-file-more {
-      font-size: 0.68rem; color: var(--text-dim);
-      padding: 2px 4px;
+      font-size: 0.72rem;
+      color: var(--tag-file-text);
+      padding: 4px 7px;
+      border-radius: 4px;
+      background: rgba(96, 165, 250, 0.06);
+      border: 1px solid rgba(96, 165, 250, 0.15);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .card-actions {
-      display: flex; gap: 6px; padding: 8px 14px 12px;
-      border-top: 1px solid var(--border); margin-top: auto;
+      display: flex;
+      gap: 6px;
+      padding: 8px 14px 12px;
+      border-top: 1px solid var(--border);
+      margin-top: auto;
     }
 
     .card-btn {
-      flex: 1; padding: 6px; border-radius: var(--radius-sm);
-      font-size: 0.75rem; font-weight: 600;
+      flex: 1;
+      padding: 7px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
       border: 1px solid var(--border);
-      background: var(--bg-input); color: var(--text-muted);
-      display: flex; align-items: center; justify-content: center; gap: 4px;
-      transition: all var(--transition);
+      background: var(--bg-input);
+      color: var(--text-muted);
     }
 
-    .card-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
-    .card-btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
-    .card-btn.primary:hover { background: var(--accent-light); }
-    .card-btn.copied { background: #1a3a2a; border-color: #4ade80; color: #4ade80; }
+    .card-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent-light);
+      background: var(--accent-dim);
+    }
+
+    .card-btn.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
 
     .no-results {
-      grid-column: 1/-1; display: flex; flex-direction: column;
-      align-items: center; padding: 60px 20px; gap: 12px;
-      color: var(--text-muted); text-align: center;
+      grid-column: 1 / -1;
+      text-align: center;
+      color: var(--text-muted);
+      padding: 60px 20px;
     }
-
-    .no-results .icon { font-size: 3rem; opacity: 0.3; }
-
-    .search-history {
-      position: absolute; top: 100%; left: 0; right: 0;
-      background: var(--bg-card); border: 1px solid var(--border);
-      border-radius: var(--radius); box-shadow: var(--shadow);
-      z-index: 200; overflow: hidden; max-height: 260px; overflow-y: auto;
-    }
-
-    .history-item {
-      display: flex; align-items: center; gap: 10px;
-      padding: 9px 16px; cursor: pointer;
-      transition: background var(--transition); font-size: 0.88rem;
-    }
-
-    .history-item:hover { background: var(--accent-dim); }
-    .history-icon { color: var(--text-dim); font-size: 0.85rem; }
-
-    .history-clear {
-      display: block; padding: 8px 16px; text-align: center;
-      font-size: 0.78rem; color: var(--danger); cursor: pointer;
-      border-top: 1px solid var(--border);
-    }
-
-    .history-clear:hover { background: rgba(224,82,82,0.1); }
 
     .modal-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.7);
-      z-index: 300; display: flex; align-items: center; justify-content: center;
-      backdrop-filter: blur(4px); opacity: 0; pointer-events: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
       transition: opacity 0.2s;
     }
 
-    .modal-overlay.open { opacity: 1; pointer-events: all; }
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
 
     .modal {
-      background: var(--bg-card); border: 1px solid var(--border);
-      border-radius: var(--radius); width: 420px; max-width: 95vw;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-      transform: translateY(20px); transition: transform 0.2s;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      width: 430px;
+      max-width: 95vw;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
     }
-
-    .modal-overlay.open .modal { transform: translateY(0); }
 
     .modal-header {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 16px 20px; border-bottom: 1px solid var(--border);
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
-    .modal-header h3 { font-size: 1rem; font-weight: 700; }
-
-    .modal-close { background: none; border: none; color: var(--text-muted); font-size: 1.2rem; }
-    .modal-close:hover { color: var(--text); }
-
-    .modal-body { padding: 20px; display: flex; flex-direction: column; gap: 16px; }
-
-    .form-group { display: flex; flex-direction: column; gap: 6px; }
-
-    .form-group label { font-size: 0.82rem; font-weight: 600; color: var(--text-muted); }
-
-    .form-group input, .form-group select {
-      background: var(--bg-input); border: 1px solid var(--border);
-      border-radius: 6px; padding: 8px 12px; color: var(--text); font-size: 0.88rem;
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.2rem;
     }
 
-    .form-group input:focus, .form-group select:focus {
-      outline: none; border-color: var(--accent);
-      box-shadow: 0 0 0 3px var(--accent-dim);
+    .modal-body {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
     }
 
-    .form-group small { font-size: 0.75rem; color: var(--text-dim); }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group label {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .form-group input,
+    .form-group select {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px 12px;
+      color: var(--text);
+      font-size: 0.88rem;
+    }
+
+    .form-group small {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      line-height: 1.5;
+    }
 
     .modal-footer {
-      padding: 14px 20px; border-top: 1px solid var(--border);
-      display: flex; justify-content: flex-end; gap: 10px;
+      padding: 14px 20px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .btn-secondary,
+    .btn-primary {
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
     }
 
     .btn-secondary {
-      padding: 8px 16px; border: 1px solid var(--border); border-radius: 6px;
-      background: var(--bg-input); color: var(--text-muted); font-size: 0.85rem;
+      border: 1px solid var(--border);
+      background: var(--bg-input);
+      color: var(--text-muted);
     }
-
-    .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
 
     .btn-primary {
-      padding: 8px 16px; border: none; border-radius: 6px;
-      background: var(--accent); color: #fff; font-size: 0.85rem; font-weight: 600;
+      border: none;
+      background: var(--accent);
+      color: #fff;
     }
 
-    .btn-primary:hover { background: var(--accent-light); }
-
-    .modal.wide {
-      width: 640px; max-width: 95vw; max-height: 90vh;
-      display: flex; flex-direction: column;
-    }
-
-    .modal.wide .modal-body { overflow-y: auto; }
-
-    .wiz-intro {
-      font-size: 0.88rem; color: var(--text-muted);
-      line-height: 1.55; margin-bottom: 4px;
-    }
-
-    .wiz-intro strong { color: var(--text); }
-    .wiz-steps { display: flex; flex-direction: column; gap: 16px; }
-    .wiz-step { display: flex; gap: 12px; }
-
-    .wiz-step-num {
-      width: 26px; height: 26px; flex-shrink: 0;
-      border-radius: 50%; background: var(--accent); color: #fff;
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 700; font-size: 0.85rem;
-    }
-
-    .wiz-step-body { flex: 1; font-size: 0.88rem; line-height: 1.55; color: var(--text); }
-
-    .wiz-step-body code {
-      background: var(--bg-input); padding: 1px 6px;
-      border-radius: 3px; font-size: 0.78rem;
-    }
-
-    .wiz-step-body a { color: var(--accent-light); text-decoration: underline; }
-
-    .wiz-code-wrap {
-      position: relative; margin: 10px 0 4px;
-      background: var(--bg); border: 1px solid var(--border);
-      border-radius: var(--radius-sm); overflow: hidden;
-    }
-
-    .wiz-code {
-      max-height: 220px; overflow: auto;
-      padding: 32px 12px 10px;
+    .debug-box {
+      margin-top: 18px;
+      padding: 12px;
+      border-radius: 8px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
       font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      font-size: 0.72rem; line-height: 1.45;
-      color: var(--text-muted); white-space: pre; tab-size: 2;
+      font-size: 0.72rem;
+      white-space: pre-wrap;
+      display: none;
     }
 
-    .wiz-copy {
-      position: absolute; top: 6px; right: 6px; z-index: 2;
-      padding: 4px 10px; font-size: 0.72rem; font-weight: 600;
-      background: var(--accent); color: #fff; border: none; border-radius: 4px;
-    }
+    @media (max-width: 650px) {
+      header {
+        padding: 8px 12px;
+        gap: 10px;
+      }
 
-    .wiz-copy:hover { background: var(--accent-light); }
-    .wiz-copy.copied { background: #1a7a4a; }
+      .logo {
+        font-size: 1.05rem;
+      }
 
-    .wiz-test-result {
-      padding: 8px 12px; font-size: 0.8rem; border-radius: 6px;
-      margin-top: 8px; display: none; line-height: 1.5;
-    }
+      main {
+        padding: 12px;
+      }
 
-    .wiz-test-result.ok      { background: #1a3a2a; color: #4ade80; display: block; }
-    .wiz-test-result.err     { background: #3a1a1a; color: #e05252; display: block; }
-    .wiz-test-result.pending { background: var(--accent-dim); color: var(--accent-light); display: block; }
+      .controls-bar {
+        padding: 8px 12px;
+      }
 
-    .wiz-hint { font-size: 0.75rem; color: var(--text-dim); margin-top: 4px; }
+      .controls-right {
+        width: 100%;
+        margin-left: 0;
+      }
 
-    .setup-link {
-      font-size: 0.78rem; color: var(--accent-light);
-      background: none; border: none; text-decoration: underline;
-      padding: 0; margin-top: 2px; align-self: flex-start;
-    }
-
-    .setup-link:hover { color: var(--accent); }
-
-    .sep { flex: 1; }
-
-    .sr-only {
-      position: absolute; width: 1px; height: 1px;
-      overflow: hidden; clip: rect(0,0,0,0);
-    }
-
-    .search-wrap-outer { flex: 1; position: relative; }
-
-    @media (max-width: 600px) {
-      header { padding: 8px 12px; gap: 10px; }
-      .logo { font-size: 1.1rem; }
-      main { padding: 12px; }
-      .controls-bar { padding: 8px 12px; }
-      .controls-right label { display: none; }
+      .sort-select {
+        width: 100%;
+      }
     }
   </style>
 </head>
-<body>
 
-<header>
-  <div class="logo">&#9650;<span> Bunkr</span></div>
-  <div class="search-wrap-outer">
-    <div class="search-wrap" id="searchWrap">
+<body>
+  <header>
+    <div class="logo">▲<span>Bunkr</span></div>
+
+    <div class="search-wrap">
       <input
         id="searchInput"
         type="text"
-        placeholder="Search albums &amp; files… (press / to focus)"
+        placeholder="Search albums & files…"
         autocomplete="off"
         spellcheck="false"
       />
     </div>
-    <div class="search-history" id="historyPanel" style="display:none;"></div>
-  </div>
-  <div class="header-btns">
-    <button class="icon-btn" id="favViewBtn" title="View Favourites (F)">&#9829;</button>
-    <button class="icon-btn" id="themeBtn" title="Toggle theme">&#9790;</button>
-    <button class="icon-btn" id="settingsBtn" title="Settings">&#9881;</button>
-  </div>
-</header>
 
-<div class="controls-bar" id="controlsBar">
-  <div class="tabs" id="tabs">
-    <button class="tab active" data-tab="all">All <span class="count" id="countAll">—</span></button>
-    <button class="tab" data-tab="albums">Albums <span class="count" id="countAlbums">—</span></button>
-    <button class="tab" data-tab="files">Files <span class="count" id="countFiles">—</span></button>
-    <button class="tab" data-tab="favs">Favs <span class="count" id="countFavs">0</span></button>
-  </div>
-  <div class="controls-right">
-    <label style="font-size:0.8rem;color:var(--text-muted)" for="sortSelect">Sort:</label>
-    <select class="sort-select" id="sortSelect">
-      <option value="date-desc">Newest</option>
-      <option value="date-asc">Oldest</option>
-      <option value="size-desc">Largest</option>
-      <option value="size-asc">Smallest</option>
-      <option value="files-desc">Most Files</option>
-      <option value="files-asc">Fewest Files</option>
-      <option value="alpha">A–Z</option>
-    </select>
-  </div>
-</div>
+    <div class="header-btns">
+      <button class="icon-btn" id="favBtn" title="Favourites">♥</button>
+      <button class="icon-btn" id="themeBtn" title="Toggle theme">☀</button>
+      <button class="icon-btn" id="settingsBtn" title="Settings">⚙</button>
+    </div>
+  </header>
 
-<main id="main">
-  <div class="state-empty" id="emptyState">
-    <div class="big-icon">&#9650;</div>
-    <h2>Search Bunkr</h2>
-    <p>Search across album titles and file names. Fast, smart, fuzzy matching across available sources.</p>
-    <div class="shortcuts">
-      <kbd class="kbd">/</kbd> focus &nbsp;
-      <kbd class="kbd">Esc</kbd> clear &nbsp;
-      <kbd class="kbd">F</kbd> favourites &nbsp;
-      <kbd class="kbd">T</kbd> theme
+  <div class="controls-bar">
+    <div class="tabs" id="tabs">
+      <button class="tab active" data-tab="all">All <span class="count" id="countAll">—</span></button>
+      <button class="tab" data-tab="albums">Albums <span class="count" id="countAlbums">—</span></button>
+      <button class="tab" data-tab="files">Files <span class="count" id="countFiles">—</span></button>
+      <button class="tab" data-tab="favs">Favs <span class="count" id="countFavs">0</span></button>
+    </div>
+
+    <div class="controls-right">
+      <select class="sort-select" id="sortSelect">
+        <option value="relevance">Relevance</option>
+        <option value="date-desc">Newest</option>
+        <option value="date-asc">Oldest</option>
+        <option value="size-desc">Largest</option>
+        <option value="size-asc">Smallest</option>
+        <option value="files-desc">Most Files</option>
+        <option value="files-asc">Fewest Files</option>
+        <option value="alpha">A–Z</option>
+      </select>
     </div>
   </div>
 
-  <div class="state-loading" id="loadingState" style="display:none;">
-    <div class="spinner"></div>
-    <span style="color:var(--text-muted);font-size:0.88rem;">Searching…</span>
-  </div>
-
-  <div class="state-error" id="errorState" style="display:none;">
-    <div class="err-icon">&#9888;</div>
-    <h3>Search failed</h3>
-    <p id="errorMsg"></p>
-    <button class="retry-btn" id="retryBtn">Retry</button>
-  </div>
-
-  <div class="results-grid" id="resultsGrid" style="display:none;"></div>
-</main>
-
-<div class="modal-overlay" id="settingsModal">
-  <div class="modal">
-    <div class="modal-header">
-      <h3>Settings</h3>
-      <button class="modal-close" id="closeSettings">&#10005;</button>
-    </div>
-    <div class="modal-body">
-      <div class="form-group">
-        <label>Cloudflare Worker URL</label>
-        <input type="text" id="workerUrlInput" placeholder="https://bunkr-search.yourname.workers.dev" />
-        <small>Your personal proxy that fetches Bunkr data.</small>
-        <button class="setup-link" id="reopenSetupBtn" type="button">&#8594; Open setup wizard</button>
-      </div>
-      <div class="form-group">
-        <label>Results per page</label>
-        <select id="perPageSelect">
-          <option value="20">20</option>
-          <option value="50" selected>50</option>
-          <option value="100">100</option>
-          <option value="200">200</option>
-          <option value="9999">All</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Actions</label>
-        <button class="btn-secondary" id="clearCacheBtn" style="text-align:left;padding:8px 12px;width:100%">
-          &#128260; Clear cached results
-        </button>
-        <button class="btn-secondary" id="clearHistoryBtn" style="text-align:left;padding:8px 12px;width:100%;margin-top:6px">
-          &#128465; Clear search history
-        </button>
-        <button class="btn-secondary" id="clearFavsBtn" style="text-align:left;padding:8px 12px;width:100%;margin-top:6px;color:var(--danger)">
-          &#128465; Clear all favourites
-        </button>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn-secondary" id="cancelSettings">Cancel</button>
-      <button class="btn-primary" id="saveSettings">Save</button>
-    </div>
-  </div>
-</div>
-
-<div class="modal-overlay" id="setupModal">
-  <div class="modal wide">
-    <div class="modal-header">
-      <h3>&#9889; Set up your Bunkr Worker</h3>
-      <button class="modal-close" id="closeSetup">&#10005;</button>
-    </div>
-    <div class="modal-body">
-      <p class="wiz-intro">
-        This app uses a small Cloudflare Worker proxy because many upstream sources block direct browser access.
-        Paste the Worker code below into Cloudflare, deploy it, then paste your Worker URL here.
+  <main>
+    <section class="state-empty" id="emptyState">
+      <div class="big-icon">▲</div>
+      <h2>Search Bunkr</h2>
+      <p>Search across available album and file index data. Use Settings to update your Cloudflare Worker URL.</p>
+      <p>
+        <kbd class="kbd">/</kbd> focus search &nbsp;
+        <kbd class="kbd">Esc</kbd> clear &nbsp;
+        <kbd class="kbd">T</kbd> theme
       </p>
-      <div class="wiz-steps">
-        <div class="wiz-step">
-          <div class="wiz-step-num">1</div>
-          <div class="wiz-step-body">
-            Go to
-            <a href="https://workers.cloudflare.com" target="_blank" rel="noopener">workers.cloudflare.com</a>,
-            create or open a Worker, then click <strong>Edit code</strong>.
-          </div>
+    </section>
+
+    <section class="state-loading" id="loadingState" style="display:none;">
+      <div class="spinner"></div>
+      <p>Searching…</p>
+    </section>
+
+    <section class="state-error" id="errorState" style="display:none;">
+      <div class="big-icon">⚠</div>
+      <h3>Search failed</h3>
+      <p id="errorMsg"></p>
+      <button class="retry-btn" id="retryBtn">Retry</button>
+      <div class="debug-box" id="debugBox"></div>
+    </section>
+
+    <section class="results-grid" id="resultsGrid" style="display:none;"></section>
+  </main>
+
+  <div class="modal-overlay" id="settingsModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Settings</h3>
+        <button class="modal-close" id="closeSettings">×</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="workerUrlInput">Cloudflare Worker URL</label>
+          <input
+            type="text"
+            id="workerUrlInput"
+            placeholder="https://your-worker.yourname.workers.dev"
+          />
+          <small>
+            This should be your Worker URL. The app sends search requests through it to reduce CORS problems.
+          </small>
         </div>
-        <div class="wiz-step">
-          <div class="wiz-step-num">2</div>
-          <div class="wiz-step-body">
-            Delete the existing Worker code, paste this code, then click <strong>Deploy</strong>.
-            <div class="wiz-code-wrap">
-              <button class="wiz-copy" id="wizCopyBtn" type="button">Copy code</button>
-              <pre class="wiz-code" id="wizCodePreview"></pre>
-            </div>
-          </div>
+
+        <div class="form-group">
+          <label for="perPageSelect">Results per page</label>
+          <select id="perPageSelect">
+            <option value="20">20</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+            <option value="200">200</option>
+            <option value="9999">All</option>
+          </select>
         </div>
-        <div class="wiz-step">
-          <div class="wiz-step-num">3</div>
-          <div class="wiz-step-body">
-            Paste your Worker URL here:
-            <div class="form-group" style="margin-top:8px">
-              <input type="text" id="setupWorkerUrl" placeholder="https://bunkr-search.yourname.workers.dev" />
-              <div class="wiz-hint">Trailing slash optional. Click <strong>Test connection</strong> to verify it works.</div>
-              <div class="wiz-test-result" id="wizTestResult"></div>
-            </div>
-          </div>
+
+        <div class="form-group">
+          <label>Actions</label>
+          <button class="btn-secondary" id="clearCacheBtn">Clear cached results</button>
+          <button class="btn-secondary" id="clearFavsBtn">Clear favourites</button>
         </div>
       </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn-secondary" id="setupSkip">Skip for now</button>
-      <button class="btn-secondary" id="setupTest">Test connection</button>
-      <button class="btn-primary" id="setupSave">Save &amp; finish</button>
+
+      <div class="modal-footer">
+        <button class="btn-secondary" id="cancelSettings">Cancel</button>
+        <button class="btn-primary" id="saveSettings">Save</button>
+      </div>
     </div>
   </div>
-</div>
 
-<script id="workerSource" type="text/plain">
-// ─────────────────────────────────────────────────────────────────────────────
-//  Bunkr Dumb Proxy Worker
-// ─────────────────────────────────────────────────────────────────────────────
+  <script>
+    const DEFAULT_WORKER_URL = "https://round-cloud-999b.swgwarburton.workers.dev";
 
-const BROWSER_HEADERS = {
-  'User-Agent':
-    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 ' +
-    '(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-  'Accept': 'application/json, text/plain, */*',
-  'Accept-Language': 'en-US,en;q=0.9',
-  'Sec-Fetch-Dest': 'empty',
-  'Sec-Fetch-Mode': 'cors',
-  'Sec-Fetch-Site': 'same-origin',
-};
-
-const CORS = {
-  'Access-Control-Allow-Origin':  '*',
-  'Access-Control-Allow-Methods': 'GET, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type',
-  'Access-Control-Max-Age':       '86400',
-};
-
-const JSON_CORS = { ...CORS, 'Content-Type': 'application/json' };
-
-function isAllowed(hostname) {
-  return hostname.toLowerCase().includes('bunkr');
-}
-
-export default {
-  async fetch(request) {
-    if (request.method === 'OPTIONS') {
-      return new Response(null, { headers: CORS });
-    }
-
-    const u = new URL(request.url);
-    const target = u.searchParams.get('url');
-
-    if (!target) {
-      return new Response(
-        JSON.stringify({ error: 'Missing ?url= parameter' }),
-        { status: 400, headers: JSON_CORS }
-      );
-    }
-
-    let targetUrl;
-
-    try {
-      targetUrl = new URL(target);
-    } catch {
-      return new Response(
-        JSON.stringify({ error: 'Invalid ?url= value' }),
-        { status: 400, headers: JSON_CORS }
-      );
-    }
-
-    if (!isAllowed(targetUrl.hostname)) {
-      return new Response(
-        JSON.stringify({ error: `Host not allowed: ${targetUrl.hostname}` }),
-        { status: 403, headers: JSON_CORS }
-      );
-    }
-
-    try {
-      const upstream = await fetch(targetUrl.toString(), {
-        headers: {
-          ...BROWSER_HEADERS,
-          Referer: targetUrl.origin + '/',
-          Origin: targetUrl.origin,
-        },
-        cf: {
-          cacheTtl: 0,
-          cacheEverything: false,
-        },
-      });
-
-      const body = await upstream.arrayBuffer();
-
-      return new Response(body, {
-        status: upstream.status,
-        headers: {
-          ...CORS,
-          'Content-Type':
-            upstream.headers.get('content-type') || 'application/octet-stream',
-          'Cache-Control': 'no-store',
-          'X-Upstream-Status': String(upstream.status),
-          'X-Upstream-Host': targetUrl.hostname,
-        },
-      });
-    } catch (e) {
-      return new Response(
-        JSON.stringify({
-          error: e?.message || 'Upstream fetch failed',
-          target: targetUrl.hostname,
-        }),
-        { status: 502, headers: JSON_CORS }
-      );
-    }
-  },
-};
-</script>
-
-<script>
-const LS = {
-  get: k => {
-    try { return JSON.parse(localStorage.getItem(k)); }
-    catch { return null; }
-  },
-  set: (k, v) => localStorage.setItem(k, JSON.stringify(v)),
-};
-
-let settings = {
-  workerUrl: 'https://round-cloud-999b.swgwarburton.workers.dev',
-  perPage: 50,
-  theme: 'dark',
-  ...LS.get('bunkr_settings'),
-};
-
-if (!settings.workerUrl) {
-  settings.workerUrl = 'https://round-cloud-999b.swgwarburton.workers.dev';
-}
-
-if ('apiUrl' in settings) {
-  delete settings.apiUrl;
-}
-
-const WORKER_SOURCE = (document.getElementById('workerSource')?.textContent || '').trim();
-
-const RESULT_CACHE_PREFIX = 'bunkr_cache_';
-const RESULT_CACHE_TTL = 30 * 60 * 1000;
-
-const resultCache = {
-  get(q) {
-    try {
-      const key = RESULT_CACHE_PREFIX + q.toLowerCase();
-      const raw = localStorage.getItem(key);
-      if (!raw) return null;
-
-      const entry = JSON.parse(raw);
-      if (!entry || Date.now() - entry.t > RESULT_CACHE_TTL) {
-        localStorage.removeItem(key);
-        return null;
+    const LS = {
+      get(key) {
+        try {
+          return JSON.parse(localStorage.getItem(key));
+        } catch {
+          return null;
+        }
+      },
+      set(key, value) {
+        localStorage.setItem(key, JSON.stringify(value));
       }
+    };
 
-      return entry.d;
-    } catch {
-      return null;
+    let settings = {
+      workerUrl: DEFAULT_WORKER_URL,
+      perPage: 50,
+      theme: "dark",
+      ...LS.get("bunkr_settings")
+    };
+
+    if (!settings.workerUrl) {
+      settings.workerUrl = DEFAULT_WORKER_URL;
     }
-  },
 
-  set(q, d) {
-    try {
-      if (!d || hitCount(d) === 0) return;
-      localStorage.setItem(
-        RESULT_CACHE_PREFIX + q.toLowerCase(),
-        JSON.stringify({ t: Date.now(), d })
-      );
-    } catch {}
-  },
+    let favs = new Set(LS.get("bunkr_favs") || []);
+    let allResults = [];
+    let currentTab = "all";
+    let currentQuery = "";
+    let lastSearch = "";
+    let debounceTimer = null;
+    let searchToken = 0;
+    let inflightCtrl = null;
+    let lastDiagnostics = [];
 
-  clearAll() {
-    for (let i = localStorage.length - 1; i >= 0; i--) {
-      const k = localStorage.key(i);
-      if (k && k.startsWith(RESULT_CACHE_PREFIX)) {
-        localStorage.removeItem(k);
+    const $ = id => document.getElementById(id);
+
+    const searchInput = $("searchInput");
+    const emptyState = $("emptyState");
+    const loadingState = $("loadingState");
+    const errorState = $("errorState");
+    const errorMsg = $("errorMsg");
+    const debugBox = $("debugBox");
+    const resultsGrid = $("resultsGrid");
+    const sortSelect = $("sortSelect");
+
+    const countAll = $("countAll");
+    const countAlbums = $("countAlbums");
+    const countFiles = $("countFiles");
+    const countFavs = $("countFavs");
+
+    const UPSTREAM_SOURCES = [
+      {
+        id: "bunkrarchive",
+        name: "BunkrArchive",
+        url: query => `https://bunkrarchive.pythonanywhere.com/api/search?q=${encodeURIComponent(query)}`,
+        parser: normalizeBunkrArchiveResults
       }
-    }
-  },
-};
+    ];
 
-let favs = new Set(LS.get('bunkr_favs') || []);
-let history = LS.get('bunkr_history') || [];
-
-let allResults = [];
-let currentTab = 'all';
-let currentQuery = '';
-let debounceTimer;
-let lastSearch = '';
-let viewingFavs = false;
-let searchToken = 0;
-let inflightCtrl = null;
-
-const $ = id => document.getElementById(id);
-
-const searchInput = $('searchInput');
-const historyPanel = $('historyPanel');
-const emptyState = $('emptyState');
-const loadingState = $('loadingState');
-const errorState = $('errorState');
-const resultsGrid = $('resultsGrid');
-const countAll = $('countAll');
-const countAlbums = $('countAlbums');
-const countFiles = $('countFiles');
-const countFavs = $('countFavs');
-const sortSelect = $('sortSelect');
-const errorMsg = $('errorMsg');
-
-function init() {
-  applyTheme();
-  updateFavCount();
-
-  $('workerUrlInput').value = settings.workerUrl || '';
-  $('perPageSelect').value = settings.perPage;
-  $('wizCodePreview').textContent = WORKER_SOURCE;
-
-  bindEvents();
-
-  const last = LS.get('bunkr_last_query');
-  if (last) {
-    searchInput.value = last;
-    doSearch(last);
-  }
-}
-
-function bindEvents() {
-  searchInput.addEventListener('input', () => {
-    const q = searchInput.value.trim();
-    clearTimeout(debounceTimer);
-
-    if (!q) {
-      hideHistory();
-      showEmpty();
-      allResults = [];
-      currentQuery = '';
-      viewingFavs = false;
-      updateCounts([], []);
-      return;
-    }
-
-    showHistory(q);
-    debounceTimer = setTimeout(() => doSearch(q), 800);
-  });
-
-  searchInput.addEventListener('focus', () => {
-    if (searchInput.value.trim()) {
-      showHistory(searchInput.value.trim());
-    }
-  });
-
-  searchInput.addEventListener('blur', () => setTimeout(hideHistory, 150));
-
-  searchInput.addEventListener('keydown', e => {
-    if (e.key === 'Escape') {
-      searchInput.value = '';
-      searchInput.blur();
-      showEmpty();
-      hideHistory();
-      allResults = [];
-      updateCounts([], []);
-    }
-
-    if (e.key === 'Enter') {
-      clearTimeout(debounceTimer);
-      doSearch(searchInput.value.trim());
-      hideHistory();
-    }
-  });
-
-  sortSelect.addEventListener('change', () => renderResults());
-
-  $('tabs').addEventListener('click', e => {
-    const btn = e.target.closest('.tab');
-    if (!btn) return;
-
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    btn.classList.add('active');
-
-    currentTab = btn.dataset.tab;
-    viewingFavs = currentTab === 'favs';
-
-    renderResults();
-  });
-
-  $('favViewBtn').addEventListener('click', () => {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.querySelector('[data-tab="favs"]').classList.add('active');
-    currentTab = 'favs';
-    viewingFavs = true;
-    renderResults();
-  });
-
-  $('themeBtn').addEventListener('click', toggleTheme);
-
-  $('retryBtn').addEventListener('click', () => doSearch(lastSearch));
-
-  $('settingsBtn').addEventListener('click', () => {
-    $('workerUrlInput').value = settings.workerUrl || '';
-    $('perPageSelect').value = settings.perPage;
-    $('settingsModal').classList.add('open');
-  });
-
-  $('closeSettings').addEventListener('click', closeSettingsModal);
-  $('cancelSettings').addEventListener('click', closeSettingsModal);
-
-  $('settingsModal').addEventListener('click', e => {
-    if (e.target === $('settingsModal')) closeSettingsModal();
-  });
-
-  $('saveSettings').addEventListener('click', () => {
-    settings.workerUrl = $('workerUrlInput').value.trim().replace(/\/$/, '');
-    settings.perPage = parseInt($('perPageSelect').value, 10);
-    saveSettings();
-    closeSettingsModal();
-    resultCache.clearAll();
-
-    if (currentQuery) {
-      doSearch(currentQuery);
-    }
-  });
-
-  $('reopenSetupBtn').addEventListener('click', () => {
-    closeSettingsModal();
-    openSetupWizard();
-  });
-
-  $('clearCacheBtn').addEventListener('click', () => {
-    resultCache.clearAll();
-    flashButton($('clearCacheBtn'), '&#10003; Cache cleared');
-  });
-
-  $('clearHistoryBtn').addEventListener('click', () => {
-    history = [];
-    LS.set('bunkr_history', []);
-    flashButton($('clearHistoryBtn'), '&#10003; History cleared');
-  });
-
-  $('clearFavsBtn').addEventListener('click', () => {
-    if (confirm('Clear all favourites?')) {
-      favs.clear();
-      LS.set('bunkr_favs', []);
+    function init() {
+      applyTheme();
       updateFavCount();
 
-      if (currentTab === 'favs') {
-        renderResults();
-      }
+      $("workerUrlInput").value = settings.workerUrl || "";
+      $("perPageSelect").value = String(settings.perPage || 50);
 
-      document.querySelectorAll('.fav-btn-overlay').forEach(b => {
-        b.classList.remove('is-fav');
-        b.title = 'Add to favourites';
-        b.innerHTML = '&#9825;';
+      bindEvents();
+
+      const last = LS.get("bunkr_last_query");
+      if (last) {
+        searchInput.value = last;
+        doSearch(last);
+      }
+    }
+
+    function bindEvents() {
+      searchInput.addEventListener("input", () => {
+        const q = searchInput.value.trim();
+        clearTimeout(debounceTimer);
+
+        if (!q) {
+          allResults = [];
+          currentQuery = "";
+          showEmpty();
+          updateCounts([], []);
+          return;
+        }
+
+        debounceTimer = setTimeout(() => doSearch(q), 450);
+      });
+
+      searchInput.addEventListener("keydown", e => {
+        if (e.key === "Enter") {
+          clearTimeout(debounceTimer);
+          doSearch(searchInput.value.trim());
+        }
+
+        if (e.key === "Escape") {
+          searchInput.value = "";
+          allResults = [];
+          currentQuery = "";
+          showEmpty();
+          updateCounts([], []);
+        }
+      });
+
+      $("tabs").addEventListener("click", e => {
+        const btn = e.target.closest(".tab");
+        if (!btn) return;
+
+        document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+        btn.classList.add("active");
+
+        currentTab = btn.dataset.tab;
+        renderResults();
+      });
+
+      sortSelect.addEventListener("change", renderResults);
+
+      $("favBtn").addEventListener("click", () => {
+        currentTab = "favs";
+        document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+        document.querySelector('[data-tab="favs"]').classList.add("active");
+        renderResults();
+      });
+
+      $("themeBtn").addEventListener("click", toggleTheme);
+      $("retryBtn").addEventListener("click", () => doSearch(lastSearch));
+
+      $("settingsBtn").addEventListener("click", openSettings);
+      $("closeSettings").addEventListener("click", closeSettings);
+      $("cancelSettings").addEventListener("click", closeSettings);
+
+      $("settingsModal").addEventListener("click", e => {
+        if (e.target === $("settingsModal")) closeSettings();
+      });
+
+      $("saveSettings").addEventListener("click", () => {
+        settings.workerUrl = $("workerUrlInput").value.trim().replace(/\/$/, "");
+        settings.perPage = parseInt($("perPageSelect").value, 10);
+        saveSettings();
+        clearResultCache();
+        closeSettings();
+
+        if (currentQuery) {
+          doSearch(currentQuery);
+        }
+      });
+
+      $("clearCacheBtn").addEventListener("click", () => {
+        clearResultCache();
+        flashButton($("clearCacheBtn"), "Cache cleared");
+      });
+
+      $("clearFavsBtn").addEventListener("click", () => {
+        favs.clear();
+        LS.set("bunkr_favs", []);
+        updateFavCount();
+        renderResults();
+        flashButton($("clearFavsBtn"), "Favourites cleared");
+      });
+
+      document.addEventListener("keydown", e => {
+        if (e.target.tagName === "INPUT" || e.target.tagName === "SELECT") return;
+
+        if (e.key === "/") {
+          e.preventDefault();
+          searchInput.focus();
+        }
+
+        if (e.key === "t" || e.key === "T") {
+          toggleTheme();
+        }
       });
     }
-  });
 
-  $('closeSetup').addEventListener('click', closeSetupWizard);
-  $('setupSkip').addEventListener('click', closeSetupWizard);
-
-  $('setupModal').addEventListener('click', e => {
-    if (e.target === $('setupModal')) closeSetupWizard();
-  });
-
-  $('wizCopyBtn').addEventListener('click', () => {
-    navigator.clipboard.writeText(WORKER_SOURCE).then(() => {
-      const btn = $('wizCopyBtn');
-      btn.textContent = '✓ Copied';
-      btn.classList.add('copied');
-      setTimeout(() => {
-        btn.textContent = 'Copy code';
-        btn.classList.remove('copied');
-      }, 1800);
-    }).catch(() => {
-      const range = document.createRange();
-      range.selectNodeContents($('wizCodePreview'));
-      const sel = window.getSelection();
-      sel.removeAllRanges();
-      sel.addRange(range);
-      alert('Auto-copy failed. The code is now selected — press Cmd/Ctrl+C to copy.');
-    });
-  });
-
-  $('setupTest').addEventListener('click', runWizardTest);
-
-  $('setupWorkerUrl').addEventListener('keydown', e => {
-    if (e.key === 'Enter') runWizardTest();
-  });
-
-  $('setupSave').addEventListener('click', () => {
-    const url = $('setupWorkerUrl').value.trim().replace(/\/$/, '');
-    const out = $('wizTestResult');
-
-    if (!url) {
-      out.className = 'wiz-test-result err';
-      out.textContent = 'Enter your worker URL first.';
-      return;
+    function openSettings() {
+      $("workerUrlInput").value = settings.workerUrl || "";
+      $("perPageSelect").value = String(settings.perPage || 50);
+      $("settingsModal").classList.add("open");
     }
 
-    if (!/^https?:\/\//i.test(url)) {
-      out.className = 'wiz-test-result err';
-      out.textContent = 'URL must start with https://';
-      return;
+    function closeSettings() {
+      $("settingsModal").classList.remove("open");
     }
 
-    settings.workerUrl = url;
-    saveSettings();
-    resultCache.clearAll();
-    $('workerUrlInput').value = url;
-    closeSetupWizard();
+    function proxyUrl(upstream) {
+      return `${settings.workerUrl.replace(/\/$/, "")}?url=${encodeURIComponent(upstream)}`;
+    }
 
-    const pending = searchInput.value.trim() || currentQuery;
-    if (pending) doSearch(pending);
-  });
+    async function doSearch(q) {
+      if (!q) return;
 
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') {
-      if ($('setupModal').classList.contains('open')) {
-        closeSetupWizard();
+      const myToken = ++searchToken;
+      currentQuery = q;
+      lastSearch = q;
+      LS.set("bunkr_last_query", q);
+
+      const cached = getCachedResult(q);
+      if (cached) {
+        if (myToken !== searchToken) return;
+        applyResults(cached);
         return;
       }
 
-      if ($('settingsModal').classList.contains('open')) {
-        closeSettingsModal();
-        return;
+      showLoading();
+
+      if (inflightCtrl) {
+        try {
+          inflightCtrl.abort();
+        } catch {}
       }
-    }
 
-    if (
-      e.target.tagName === 'INPUT' ||
-      e.target.tagName === 'SELECT' ||
-      e.target.tagName === 'TEXTAREA'
-    ) {
-      return;
-    }
+      const ctrl = new AbortController();
+      inflightCtrl = ctrl;
 
-    if ($('settingsModal').classList.contains('open')) return;
-    if ($('setupModal').classList.contains('open')) return;
+      try {
+        const { data, diagnostics } = await searchAllSources(q, ctrl.signal);
+        lastDiagnostics = diagnostics || [];
 
-    if (e.key === '/' || e.key === 's') {
-      e.preventDefault();
-      searchInput.focus();
-    }
+        if (myToken !== searchToken) return;
 
-    if (e.key === 'f' || e.key === 'F') {
-      $('favViewBtn').click();
-    }
-
-    if (e.key === 't' || e.key === 'T') {
-      toggleTheme();
-    }
-  });
-}
-
-function closeSettingsModal() {
-  $('settingsModal').classList.remove('open');
-}
-
-function openSetupWizard() {
-  $('setupWorkerUrl').value = settings.workerUrl || '';
-  const out = $('wizTestResult');
-  out.className = 'wiz-test-result';
-  out.textContent = '';
-  $('setupModal').classList.add('open');
-}
-
-function closeSetupWizard() {
-  $('setupModal').classList.remove('open');
-}
-
-async function runWizardTest() {
-  const url = $('setupWorkerUrl').value.trim().replace(/\/$/, '');
-  const out = $('wizTestResult');
-
-  if (!url) {
-    out.className = 'wiz-test-result err';
-    out.textContent = 'Enter your worker URL first.';
-    return;
-  }
-
-  if (!/^https?:\/\//i.test(url)) {
-    out.className = 'wiz-test-result err';
-    out.textContent = 'URL must start with https://';
-    return;
-  }
-
-  out.className = 'wiz-test-result pending';
-  out.textContent = 'Testing worker…';
-
-  const probeUpstream = 'https://bunkrarchive.pythonanywhere.com/api/search?q=test';
-  const probeUrl = `${url}?url=${encodeURIComponent(probeUpstream)}`;
-
-  try {
-    const res = await fetchWithTimeout(probeUrl, 15000);
-
-    if (res.status === 400) {
-      const j = await res.json().catch(() => ({}));
-      throw new Error(j.error || 'Bad Request');
-    }
-
-    if (res.status === 403) {
-      throw new Error('Proxy rejected the test URL. Check the Worker code is updated.');
-    }
-
-    if (!res.ok && res.status !== 502 && res.status !== 503) {
-      throw new Error(`Worker returned HTTP ${res.status}`);
-    }
-
-    const data = await res.json().catch(() => null);
-
-    if (!data) {
-      throw new Error('Worker responded but returned no JSON.');
-    }
-
-    out.className = 'wiz-test-result ok';
-    out.textContent = '✓ Worker reachable. Click Save & finish.';
-  } catch (e) {
-    out.className = 'wiz-test-result err';
-
-    const detail = e.name === 'AbortError'
-      ? 'Request timed out after 15s. Is the worker deployed?'
-      : /Failed to fetch|NetworkError/i.test(e.message)
-        ? 'Could not reach the URL. Double-check for typos and that the Worker is deployed.'
-        : e.message;
-
-    out.textContent = `✗ ${detail}`;
-  }
-}
-
-function flashButton(btn, html) {
-  const orig = btn.innerHTML;
-  btn.innerHTML = html;
-  setTimeout(() => {
-    btn.innerHTML = orig;
-  }, 1500);
-}
-
-const UPSTREAM_SOURCES = [
-  {
-    id: "bunkrarchive-search",
-    name: "BunkrArchive",
-    url: query => `https://bunkrarchive.pythonanywhere.com/api/search?q=${encodeURIComponent(query)}`,
-    viaProxy: true,
-    parser: normalizeBunkrArchiveResults
-  }
-];
-
-function normalizeBunkrArchiveResults(data) {
-  const albumResults = Array.isArray(data?.album_results) ? data.album_results : [];
-  const fileResults = Array.isArray(data?.file_results) ? data.file_results : [];
-
-  const albums = albumResults.map(item => ({
-    type: "album",
-    objectID: item.objectID || item.id || item.album_id,
-    album_title: decodeHtml(item.album_title || item.title || "Untitled album"),
-    title: decodeHtml(item.album_title || item.title || "Untitled album"),
-    name: decodeHtml(item.album_title || item.title || "Untitled album"),
-    album_date: item.album_date || item.date || "",
-    file_count: item.file_count ?? 0,
-    total_size: item.total_size || item.size || "",
-    match_type: item.match_type || ""
-  }));
-
-  const files = fileResults.map(item => ({
-    type: "file",
-    objectID: item.objectID || item.id || item.album_id,
-    album_title: decodeHtml(item.album_title || item.title || "Untitled album"),
-    title: decodeHtml(item.album_title || item.title || "Untitled album"),
-    name: decodeHtml(item.album_title || item.title || "Untitled album"),
-    album_date: item.album_date || item.date || "",
-    file_count: item.file_count ?? 0,
-    total_size: item.total_size || item.size || "",
-    match_type: item.match_type || "",
-    matching_files: Array.isArray(item.matching_files)
-      ? item.matching_files.map(file => ({
-          ...file,
-          id: file.id || file.objectID || file.file_id || file.url || file.name,
-          name: decodeHtml(file.name || file.file_name || file.filename || "Matching file")
-        }))
-      : []
-  }));
-
-  return [...albums, ...files];
-}
-
-function decodeHtml(value) {
-  const textarea = document.createElement("textarea");
-  textarea.innerHTML = value || "";
-  return textarea.value;
-}
-function proxyUrl(upstream) {
-  return `${settings.workerUrl.replace(/\/$/, '')}?url=${encodeURIComponent(upstream)}`;
-}
-
-function hitCount(data) {
-  if (!data) return 0;
-
-  return (data.album_results?.length || 0)
-    + (data.file_results?.length || 0)
-    + (data.albums?.length || 0)
-    + (data.files?.length || 0)
-    + (data.results?.length || 0)
-    + (data.items?.length || 0);
-}
-
-function isSearchShape(data) {
-  if (!data || typeof data !== 'object') return false;
-
-  return (
-    Array.isArray(data.album_results) ||
-    Array.isArray(data.file_results) ||
-    Array.isArray(data.albums) ||
-    Array.isArray(data.files) ||
-    Array.isArray(data.results) ||
-    Array.isArray(data.items)
-  );
-}
-
-async function fetchWithTimeout(url, ms = 15000, options = {}) {
-  const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), ms);
-
-  const externalSignal = options.signal;
-  const onAbort = () => ctrl.abort();
-
-  if (externalSignal) {
-    if (externalSignal.aborted) {
-      ctrl.abort();
-    } else {
-      externalSignal.addEventListener('abort', onAbort, { once: true });
-    }
-  }
-
-  try {
-    const res = await fetch(url, {
-      ...options,
-      signal: ctrl.signal,
-      cache: 'no-store',
-    });
-
-    return res;
-  } finally {
-    clearTimeout(timer);
-
-    if (externalSignal) {
-      externalSignal.removeEventListener('abort', onAbort);
-    }
-  }
-}
-
-function normalizeData(data) {
-  if (!data || typeof data !== 'object') {
-    return {
-      album_results: [],
-      file_results: [],
-    };
-  }
-
-  const flatRaw = data.results || data.items || [];
-
-  const albumRaw = data.album_results || data.albums ||
-    flatRaw.filter(r =>
-      r?.type === 'album' ||
-      r?.album_title ||
-      r?.objectID ||
-      r?.album_id
-    );
-
-  const fileRaw = data.file_results || data.files ||
-    flatRaw.filter(r =>
-      r?.type === 'file' ||
-      r?.file_name ||
-      r?.filename ||
-      r?.name
-    );
-
-  return {
-    ...data,
-    album_results: Array.isArray(albumRaw) ? albumRaw : [],
-    file_results: Array.isArray(fileRaw) ? fileRaw : [],
-  };
-}
-
-function mergeSearchPayloads(payloads) {
-  const albums = new Map();
-  const files = new Map();
-
-  for (const payload of payloads) {
-    const data = normalizeData(payload);
-
-    for (const album of data.album_results) {
-      const id = album.objectID || album.id || album.album_id || album.slug || album.url || album.album_title;
-      if (!id) continue;
-
-      if (!albums.has(id)) {
-        albums.set(id, {
-          objectID: id,
-          ...album,
-        });
-      }
-    }
-
-    for (const file of data.file_results) {
-      const albumId =
-        file.objectID ||
-        file.album_id ||
-        file.albumID ||
-        file.parent_id ||
-        file.album ||
-        file.url ||
-        file.name;
-
-      if (!albumId) continue;
-
-      const safeFile = {
-        id: file.id || file.file_id || file.objectID || file.url || file.name || albumId,
-        name: file.name || file.file_name || file.filename || file.title || 'Matching file',
-        ...file,
-      };
-
-      if (!files.has(albumId)) {
-        files.set(albumId, {
-          type: 'file',
-          objectID: albumId,
-          album_title: file.album_title || file.title || file.name || albumId,
-          total_size: file.total_size || file.size || '',
-          file_count: file.file_count || undefined,
-          album_date: file.album_date || file.date || '',
-          matching_files: [safeFile],
-        });
-      } else {
-        const existing = files.get(albumId);
-        existing.matching_files.push(safeFile);
-      }
-    }
-  }
-
-  return {
-    album_results: [...albums.values()],
-    file_results: [...files.values()],
-  };
-}
-
-async function trySource(source, q, signal, viaProxy) {
-  const upstream = source.url(q);
-  const finalUrl = viaProxy ? proxyUrl(upstream) : upstream;
-  const label = viaProxy ? `proxy:${source.name}` : `direct:${source.name}`;
-
-  try {
-    const res = await fetchWithTimeout(finalUrl, viaProxy ? 18000 : 6000, { signal });
-
-    if (!res.ok) {
-      return {
-        ok: false,
-        source: label,
-        error: `HTTP ${res.status}`,
-      };
-    }
-
-    const rawData = await res.json().catch(() => null);
-
-    if (!isSearchShape(rawData)) {
-      return {
-        ok: false,
-        source: label,
-        error: 'Unexpected response shape',
-      };
-    }
-
-    const parsedData = source.parser
-      ? source.parser(rawData)
-      : rawData;
-
-    const finalData = Array.isArray(parsedData)
-      ? {
-          album_results: parsedData.filter(item => item.type === "album"),
-          file_results: parsedData.filter(item => item.type === "file")
+        if (!data || hitCount(data) === 0) {
+          showError(
+            "No usable results came back. The source may be temporarily down, rate-limited, or blocking requests.",
+            diagnostics
+          );
+          return;
         }
-      : parsedData;
 
-    return {
-      ok: true,
-      source: label,
-      data: finalData,
-      count: hitCount(finalData),
-    };
-  } catch (e) {
-    return {
-      ok: false,
-      source: label,
-      error: e.name === 'AbortError' ? 'Timed out' : (e.message || 'Failed'),
-    };
-  }
-}
-async function searchAllSources(q, signal) {
-  const attempts = [
-    ...UPSTREAM_SOURCES.map(source => trySource(source, q, signal, true)),
-  ];
+        setCachedResult(q, data);
+        applyResults(data);
+      } catch (e) {
+        if (myToken !== searchToken) return;
 
-  const settled = await Promise.allSettled(attempts);
+        showError(
+          e.name === "AbortError"
+            ? "Search timed out. Try again in a moment."
+            : e.message || "Unknown search error.",
+          lastDiagnostics
+        );
+      } finally {
+        if (inflightCtrl === ctrl) {
+          inflightCtrl = null;
+        }
+      }
+    }
 
-  const outcomes = settled.map(result => {
-    if (result.status === 'fulfilled') return result.value;
-    return {
-      ok: false,
-      source: 'unknown',
-      error: result.reason?.message || 'Rejected',
-    };
-  });
+    async function searchAllSources(q, signal) {
+      const attempts = [];
 
-  const successful = outcomes.filter(o => o.ok && o.data);
-  const withHits = successful.filter(o => o.count > 0);
+      for (const source of UPSTREAM_SOURCES) {
+        attempts.push(trySource(source, q, signal, false));
+        attempts.push(trySource(source, q, signal, true));
+      }
 
-  console.groupCollapsed(`Bunkr search diagnostics for "${q}"`);
-  console.table(outcomes.map(o => ({
-    source: o.source,
-    ok: o.ok,
-    count: o.count || 0,
-    error: o.error || '',
-  })));
-  console.groupEnd();
+      const settled = await Promise.allSettled(attempts);
 
-  if (withHits.length > 0) {
-    return {
-      data: mergeSearchPayloads(withHits.map(o => o.data)),
-      diagnostics: outcomes,
-    };
-  }
+      const outcomes = settled.map(result => {
+        if (result.status === "fulfilled") return result.value;
+        return {
+          ok: false,
+          source: "unknown",
+          error: result.reason?.message || "Rejected"
+        };
+      });
 
-  if (successful.length > 0) {
-    return {
-      data: mergeSearchPayloads(successful.map(o => o.data)),
-      diagnostics: outcomes,
-    };
-  }
+      console.groupCollapsed(`Search diagnostics: ${q}`);
+      console.table(outcomes);
+      console.groupEnd();
 
-  return {
-    data: null,
-    diagnostics: outcomes,
-  };
-}
+      const successful = outcomes.filter(o => o.ok && o.data && hitCount(o.data) > 0);
 
-function applyResults(data) {
-  const normalized = normalizeData(data);
+      if (!successful.length) {
+        return {
+          data: null,
+          diagnostics: outcomes
+        };
+      }
 
-  const albumRaw = normalized.album_results;
-  const fileRaw = normalized.file_results;
+      return {
+        data: mergeSearchPayloads(successful.map(o => o.data)),
+        diagnostics: outcomes
+      };
+    }
 
-  allResults = [
-    ...albumRaw.map(a => ({
-      type: 'album',
-      ...a,
-      objectID: a.objectID || a.id || a.album_id || a.slug || a.url || a.album_title,
-    })),
-    ...fileRaw.map(f => ({
-      type: 'file',
-      ...f,
-      objectID: f.objectID || f.album_id || f.albumID || f.parent_id || f.album || f.url || f.name,
-    })),
-  ].filter(item => item.objectID);
+    async function trySource(source, q, signal, viaProxy) {
+      const upstream = source.url(q);
+      const finalUrl = viaProxy ? proxyUrl(upstream) : upstream;
+      const label = viaProxy ? `proxy:${source.name}` : `direct:${source.name}`;
 
-  updateCounts(albumRaw, fileRaw);
+      try {
+        const res = await fetchWithTimeout(finalUrl, viaProxy ? 18000 : 7000, { signal });
 
-  if (currentTab === 'favs') currentTab = 'all';
+        const contentType = res.headers.get("content-type") || "";
+        const text = await res.text();
 
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.querySelector('[data-tab="all"]').classList.add('active');
+        if (!res.ok) {
+          return {
+            ok: false,
+            source: label,
+            status: res.status,
+            error: detectBlockedHtml(text) || `HTTP ${res.status}`
+          };
+        }
 
-  currentTab = 'all';
+        if (!contentType.includes("application/json") && !looksLikeJson(text)) {
+          return {
+            ok: false,
+            source: label,
+            status: res.status,
+            error: detectBlockedHtml(text) || "Response was not JSON"
+          };
+        }
 
-  renderResults();
-}
+        let rawData;
 
-async function doSearch(q) {
-  if (!q) return;
+        try {
+          rawData = JSON.parse(text);
+        } catch {
+          return {
+            ok: false,
+            source: label,
+            status: res.status,
+            error: "Could not parse JSON"
+          };
+        }
 
-  if (q.length < 3) {
-    showError('Please enter at least 3 characters. Short searches are unreliable.');
-    return;
-  }
+        if (!isSearchShape(rawData)) {
+          return {
+            ok: false,
+            source: label,
+            status: res.status,
+            error: "Unexpected response shape"
+          };
+        }
 
-  const myToken = ++searchToken;
+        const parsed = source.parser ? source.parser(rawData) : rawData;
 
-  viewingFavs = false;
-  currentQuery = q;
-  lastSearch = q;
+        const finalData = Array.isArray(parsed)
+          ? {
+              album_results: parsed.filter(item => item.type === "album"),
+              file_results: parsed.filter(item => item.type === "file")
+            }
+          : parsed;
 
-  LS.set('bunkr_last_query', q);
-  addToHistory(q);
+        return {
+          ok: true,
+          source: label,
+          status: res.status,
+          count: hitCount(finalData),
+          data: finalData
+        };
+      } catch (e) {
+        return {
+          ok: false,
+          source: label,
+          error: e.name === "AbortError" ? "Timed out" : e.message || "Failed"
+        };
+      }
+    }
 
-  if (!settings.workerUrl) {
-    openSetupWizard();
-    showEmpty();
-    return;
-  }
+    async function fetchWithTimeout(url, ms = 15000, options = {}) {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), ms);
 
-  const cached = resultCache.get(q);
+      const externalSignal = options.signal;
+      const onAbort = () => ctrl.abort();
 
-  if (cached) {
-    if (myToken !== searchToken) return;
-    applyResults(cached);
-    return;
-  }
+      if (externalSignal) {
+        if (externalSignal.aborted) {
+          ctrl.abort();
+        } else {
+          externalSignal.addEventListener("abort", onAbort, { once: true });
+        }
+      }
 
-  showLoading();
-  errorState.style.display = 'none';
+      try {
+        return await fetch(url, {
+          ...options,
+          signal: ctrl.signal,
+          cache: "no-store"
+        });
+      } finally {
+        clearTimeout(timer);
+        if (externalSignal) {
+          externalSignal.removeEventListener("abort", onAbort);
+        }
+      }
+    }
 
-  if (inflightCtrl) {
-    try { inflightCtrl.abort(); } catch {}
-  }
+    function normalizeBunkrArchiveResults(data) {
+      const albumResults = Array.isArray(data?.album_results) ? data.album_results : [];
+      const fileResults = Array.isArray(data?.file_results) ? data.file_results : [];
 
-  const ctrl = new AbortController();
-  inflightCtrl = ctrl;
+      const albums = albumResults.map(item => {
+        const title = decodeHtml(item.album_title || item.title || item.name || "Untitled album");
+        return {
+          type: "album",
+          objectID: item.objectID || item.id || item.album_id || item.slug || item.url || title,
+          album_title: title,
+          title,
+          name: title,
+          album_date: item.album_date || item.date || "",
+          file_count: item.file_count ?? "",
+          total_size: item.total_size || item.size || ""
+        };
+      });
 
-  const globalTimer = setTimeout(() => ctrl.abort(), 30000);
+      const files = fileResults.map(item => {
+        const title = decodeHtml(item.album_title || item.title || item.name || "Untitled album");
 
-  try {
-    const { data, diagnostics } = await searchAllSources(q, ctrl.signal);
+        return {
+          type: "file",
+          objectID: item.objectID || item.album_id || item.id || item.url || title,
+          album_title: title,
+          title,
+          name: title,
+          album_date: item.album_date || item.date || "",
+          file_count: item.file_count ?? "",
+          total_size: item.total_size || item.size || "",
+          matching_files: Array.isArray(item.matching_files)
+            ? item.matching_files.map(file => ({
+                ...file,
+                id: file.id || file.objectID || file.file_id || file.url || file.name,
+                name: decodeHtml(file.name || file.file_name || file.filename || "Matching file")
+              }))
+            : []
+        };
+      });
 
-    if (myToken !== searchToken) return;
+      return [...albums, ...files];
+    }
 
-    if (!data) {
-      const failures = diagnostics
-        .slice(0, 6)
-        .map(d => `${d.source}: ${d.error || 'failed'}`)
-        .join(' | ');
+    function mergeSearchPayloads(payloads) {
+      const albums = new Map();
+      const files = new Map();
 
-      showError(
-        `All search sources failed. This usually means the upstream sources are down, blocked, or have changed. Details: ${failures}`
+      for (const payload of payloads) {
+        const normalized = normalizeData(payload);
+
+        for (const album of normalized.album_results) {
+          const id = album.objectID || album.id || album.album_id || album.slug || album.url || album.album_title;
+          if (!id) continue;
+
+          if (!albums.has(id)) {
+            albums.set(id, {
+              type: "album",
+              objectID: id,
+              ...album
+            });
+          }
+        }
+
+        for (const file of normalized.file_results) {
+          const id =
+            file.objectID ||
+            file.album_id ||
+            file.albumID ||
+            file.parent_id ||
+            file.album ||
+            file.url ||
+            file.name;
+
+          if (!id) continue;
+
+          if (!files.has(id)) {
+            files.set(id, {
+              type: "file",
+              objectID: id,
+              ...file,
+              matching_files: Array.isArray(file.matching_files) ? file.matching_files : []
+            });
+          } else {
+            const existing = files.get(id);
+            existing.matching_files.push(...(file.matching_files || []));
+          }
+        }
+      }
+
+      return {
+        album_results: [...albums.values()],
+        file_results: [...files.values()]
+      };
+    }
+
+    function normalizeData(data) {
+      if (!data || typeof data !== "object") {
+        return {
+          album_results: [],
+          file_results: []
+        };
+      }
+
+      const flatRaw = data.results || data.items || [];
+
+      const albumRaw =
+        data.album_results ||
+        data.albums ||
+        flatRaw.filter(r => r?.type === "album" || r?.album_title || r?.album_id);
+
+      const fileRaw =
+        data.file_results ||
+        data.files ||
+        flatRaw.filter(r => r?.type === "file" || r?.file_name || r?.filename);
+
+      return {
+        album_results: Array.isArray(albumRaw) ? albumRaw : [],
+        file_results: Array.isArray(fileRaw) ? fileRaw : []
+      };
+    }
+
+    function applyResults(data) {
+      const normalized = normalizeData(data);
+      const albums = normalized.album_results;
+      const files = normalized.file_results;
+
+      allResults = [
+        ...albums.map(a => ({
+          type: "album",
+          ...a,
+          objectID: a.objectID || a.id || a.album_id || a.slug || a.url || a.album_title
+        })),
+        ...files.map(f => ({
+          type: "file",
+          ...f,
+          objectID: f.objectID || f.album_id || f.albumID || f.parent_id || f.album || f.url || f.name
+        }))
+      ].filter(item => item.objectID);
+
+      updateCounts(albums, files);
+
+      currentTab = "all";
+      document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+      document.querySelector('[data-tab="all"]').classList.add("active");
+
+      renderResults();
+    }
+
+    function renderResults() {
+      hideLoading();
+      errorState.style.display = "none";
+
+      let items = [...allResults];
+
+      if (currentTab === "albums") {
+        items = items.filter(i => i.type === "album");
+      }
+
+      if (currentTab === "files") {
+        items = items.filter(i => i.type === "file");
+      }
+
+      if (currentTab === "favs") {
+        items = [...favs]
+          .map(id => allResults.find(i => i.objectID === id) || { type: "fav-ghost", objectID: id })
+          .filter(Boolean);
+      }
+
+      if (currentTab !== "favs" && currentQuery) {
+        const q = currentQuery.toLowerCase();
+
+        items = items
+          .map(item => ({
+            item,
+            score: scoreItem(item, q)
+          }))
+          .filter(x => x.score > 0)
+          .sort((a, b) => b.score - a.score)
+          .map(x => x.item);
+      }
+
+      items = sortItems(items, sortSelect.value);
+
+      const perPage = settings.perPage || 50;
+      const shown = items.slice(0, perPage);
+
+      if (!shown.length) {
+        resultsGrid.style.display = "grid";
+        emptyState.style.display = "none";
+        loadingState.style.display = "none";
+        resultsGrid.innerHTML = `
+          <div class="no-results">
+            <p>No results. Try a different search term or check the console diagnostics.</p>
+          </div>
+        `;
+        return;
+      }
+
+      resultsGrid.style.display = "grid";
+      emptyState.style.display = "none";
+      loadingState.style.display = "none";
+
+      resultsGrid.innerHTML = shown.map(renderCard).join("");
+
+      if (items.length > perPage) {
+        resultsGrid.innerHTML += `
+          <div class="no-results">
+            <p>Showing ${perPage} of ${items.length}. Increase Results per page in Settings to see more.</p>
+          </div>
+        `;
+      }
+
+      resultsGrid.querySelectorAll("[data-action='copy']").forEach(btn => {
+        btn.addEventListener("click", e => {
+          e.stopPropagation();
+          copyUrl(btn.dataset.url);
+          flashButton(btn, "Copied");
+        });
+      });
+
+      resultsGrid.querySelectorAll("[data-action='open']").forEach(btn => {
+        btn.addEventListener("click", e => {
+          e.stopPropagation();
+          window.open(btn.dataset.url, "_blank", "noopener");
+        });
+      });
+
+      resultsGrid.querySelectorAll(".fav-btn").forEach(btn => {
+        btn.addEventListener("click", e => {
+          e.stopPropagation();
+          toggleFav(btn.dataset.id);
+        });
+      });
+
+      resultsGrid.querySelectorAll(".card").forEach(card => {
+        card.addEventListener("click", () => {
+          const url = card.dataset.url;
+          if (url) window.open(url, "_blank", "noopener");
+        });
+      });
+    }
+
+    function renderCard(item) {
+      const isGhost = item.type === "fav-ghost";
+      const isAlbum = item.type === "album" || isGhost;
+      const id = item.objectID;
+      const url = isAlbum ? albumUrl(id) : albumUrl(id);
+      const isFav = favs.has(id);
+
+      const title = escHtml(item.album_title || item.title || item.name || id);
+      const size = item.total_size || item.size || "";
+      const fileCount = item.file_count !== "" && item.file_count != null ? `${item.file_count} files` : "";
+      const date = formatDate(item.album_date || item.date || "");
+      const icon = isAlbum ? "💿" : "📄";
+
+      let matchingFiles = "";
+
+      if (!isAlbum && Array.isArray(item.matching_files) && item.matching_files.length) {
+        matchingFiles = `
+          <div class="matching-files">
+            ${item.matching_files.slice(0, 3).map(file => {
+              const fileName = escHtml(file.name || file.file_name || file.filename || "Matching file");
+              const fileId = file.id || file.file_id || file.objectID || file.url || "";
+              const href = fileId ? fileUrl(fileId) : url;
+
+              return `<a class="matching-file" href="${href}" target="_blank" rel="noopener">📄 ${fileName}</a>`;
+            }).join("")}
+          </div>
+        `;
+      }
+
+      return `
+        <article class="card" data-url="${url}" data-id="${escHtml(id)}">
+          <div class="card-thumb" style="background:${gradientFor(id)}">
+            <span class="card-thumb-inner">${icon}</span>
+            <div class="thumb-overlay"></div>
+            <span class="card-type-badge ${isAlbum ? "badge-album" : "badge-file"}">
+              ${isAlbum ? "Album" : "File match"}
+            </span>
+            <button class="fav-btn ${isFav ? "is-fav" : ""}" data-id="${escHtml(id)}" title="Favourite">
+              ${isFav ? "♥" : "♡"}
+            </button>
+          </div>
+
+          <div class="card-body">
+            <div class="card-title">${title}</div>
+            <div class="card-meta">
+              ${fileCount ? `<span>💾 ${escHtml(fileCount)}</span>` : ""}
+              ${size ? `<span>📁 ${escHtml(size)}</span>` : ""}
+              ${date ? `<span>🕒 ${escHtml(date)}</span>` : ""}
+            </div>
+            ${matchingFiles}
+          </div>
+
+          <div class="card-actions">
+            <button class="card-btn" data-action="copy" data-url="${url}">Copy</button>
+            <button class="card-btn primary" data-action="open" data-url="${url}">Open</button>
+          </div>
+        </article>
+      `;
+    }
+
+    function scoreItem(item, q) {
+      const title = (item.album_title || item.title || item.name || "").toLowerCase();
+      const files = (item.matching_files || []).map(f => (f.name || f.file_name || f.filename || "").toLowerCase());
+      const words = q.split(/\s+/).filter(Boolean);
+
+      if (!words.length) return 1;
+      if (title === q) return 4000;
+      if (title.startsWith(q)) return 3000;
+      if (words.every(w => title.includes(w))) return 2000;
+
+      const combined = [title, ...files].join(" ");
+      if (words.every(w => combined.includes(w))) return 1000;
+      if (words.some(w => w.length > 1 && combined.includes(w))) return 100;
+      if (fuzzySeq(title, q)) return 50;
+
+      return 0;
+    }
+
+    function sortItems(items, mode) {
+      if (mode === "relevance") return items;
+
+      return [...items].sort((a, b) => {
+        switch (mode) {
+          case "date-desc":
+            return parseDate(b.album_date || b.date) - parseDate(a.album_date || a.date);
+          case "date-asc":
+            return parseDate(a.album_date || a.date) - parseDate(b.album_date || b.date);
+          case "size-desc":
+            return parseSize(b.total_size || b.size) - parseSize(a.total_size || a.size);
+          case "size-asc":
+            return parseSize(a.total_size || a.size) - parseSize(b.total_size || b.size);
+          case "files-desc":
+            return Number(b.file_count || 0) - Number(a.file_count || 0);
+          case "files-asc":
+            return Number(a.file_count || 0) - Number(b.file_count || 0);
+          case "alpha":
+            return (a.album_title || a.title || a.name || "").localeCompare(b.album_title || b.title || b.name || "");
+          default:
+            return 0;
+        }
+      });
+    }
+
+    function toggleFav(id) {
+      if (favs.has(id)) {
+        favs.delete(id);
+      } else {
+        favs.add(id);
+      }
+
+      LS.set("bunkr_favs", [...favs]);
+      updateFavCount();
+      renderResults();
+    }
+
+    function updateFavCount() {
+      countFavs.textContent = favs.size;
+    }
+
+    function updateCounts(albums, files) {
+      countAll.textContent = albums.length + files.length;
+      countAlbums.textContent = albums.length;
+      countFiles.textContent = files.length;
+      updateFavCount();
+    }
+
+    function getCachedResult(q) {
+      try {
+        const raw = localStorage.getItem("bunkr_cache_" + q.toLowerCase());
+        if (!raw) return null;
+
+        const entry = JSON.parse(raw);
+        const age = Date.now() - entry.t;
+
+        if (age > 30 * 60 * 1000) {
+          localStorage.removeItem("bunkr_cache_" + q.toLowerCase());
+          return null;
+        }
+
+        return entry.d;
+      } catch {
+        return null;
+      }
+    }
+
+    function setCachedResult(q, data) {
+      try {
+        localStorage.setItem(
+          "bunkr_cache_" + q.toLowerCase(),
+          JSON.stringify({
+            t: Date.now(),
+            d: data
+          })
+        );
+      } catch {}
+    }
+
+    function clearResultCache() {
+      for (let i = localStorage.length - 1; i >= 0; i--) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith("bunkr_cache_")) {
+          localStorage.removeItem(key);
+        }
+      }
+    }
+
+    function showEmpty() {
+      emptyState.style.display = "flex";
+      loadingState.style.display = "none";
+      errorState.style.display = "none";
+      resultsGrid.style.display = "none";
+    }
+
+    function showLoading() {
+      emptyState.style.display = "none";
+      loadingState.style.display = "flex";
+      errorState.style.display = "none";
+      resultsGrid.style.display = "none";
+      debugBox.style.display = "none";
+    }
+
+    function hideLoading() {
+      loadingState.style.display = "none";
+    }
+
+    function showError(message, diagnostics = []) {
+      emptyState.style.display = "none";
+      loadingState.style.display = "none";
+      resultsGrid.style.display = "none";
+      errorState.style.display = "flex";
+      errorMsg.textContent = message;
+
+      if (diagnostics && diagnostics.length) {
+        debugBox.style.display = "block";
+        debugBox.textContent = JSON.stringify(diagnostics, null, 2);
+      } else {
+        debugBox.style.display = "none";
+      }
+
+      allResults = [];
+      updateCounts([], []);
+    }
+
+    function applyTheme() {
+      document.body.classList.toggle("theme-light", settings.theme === "light");
+      $("themeBtn").textContent = settings.theme === "light" ? "☾" : "☀";
+    }
+
+    function toggleTheme() {
+      settings.theme = settings.theme === "dark" ? "light" : "dark";
+      applyTheme();
+      saveSettings();
+    }
+
+    function saveSettings() {
+      LS.set("bunkr_settings", settings);
+    }
+
+    function flashButton(btn, text) {
+      const original = btn.textContent;
+      btn.textContent = text;
+      setTimeout(() => {
+        btn.textContent = original;
+      }, 1300);
+    }
+
+    function copyUrl(url) {
+      navigator.clipboard.writeText(url).catch(() => {
+        prompt("Copy this URL:", url);
+      });
+    }
+
+    function albumUrl(id) {
+      return `https://bunkr.si/a/${id}`;
+    }
+
+    function fileUrl(id) {
+      return `https://bunkr.si/f/${id}`;
+    }
+
+    function hitCount(data) {
+      if (!data) return 0;
+
+      return (
+        (data.album_results?.length || 0) +
+        (data.file_results?.length || 0) +
+        (data.albums?.length || 0) +
+        (data.files?.length || 0) +
+        (data.results?.length || 0) +
+        (data.items?.length || 0)
       );
-      return;
     }
 
-    if (hitCount(data) > 0) {
-      resultCache.set(q, data);
+    function isSearchShape(data) {
+      if (!data || typeof data !== "object") return false;
+
+      return (
+        Array.isArray(data.album_results) ||
+        Array.isArray(data.file_results) ||
+        Array.isArray(data.albums) ||
+        Array.isArray(data.files) ||
+        Array.isArray(data.results) ||
+        Array.isArray(data.items)
+      );
     }
 
-    applyResults(data);
-  } catch (e) {
-    if (myToken !== searchToken) return;
-
-    if (e.name === 'AbortError') {
-      showError('Search timed out after 30 seconds. Try again in a moment.');
-    } else if (/Failed to fetch|NetworkError/i.test(e.message)) {
-      showError('Could not reach your Worker. Check the Worker URL in Settings.');
-    } else {
-      showError(e.message || 'Unknown error.');
+    function looksLikeJson(text) {
+      const trimmed = String(text || "").trim();
+      return trimmed.startsWith("{") || trimmed.startsWith("[");
     }
-  } finally {
-    clearTimeout(globalTimer);
 
-    if (inflightCtrl === ctrl) {
-      inflightCtrl = null;
+    function detectBlockedHtml(text) {
+      const lower = String(text || "").toLowerCase();
+
+      if (lower.includes("ddos-guard") || lower.includes("checking your browser")) {
+        return "Blocked by DDoS-Guard/browser challenge";
+      }
+
+      if (lower.includes("cloudflare") && lower.includes("challenge")) {
+        return "Blocked by Cloudflare/browser challenge";
+      }
+
+      return "";
     }
-  }
-}
 
-function renderResults() {
-  hideLoading();
-  errorState.style.display = 'none';
-
-  let items = allResults;
-
-  if (currentTab === 'albums') {
-    items = items.filter(i => i.type === 'album');
-  } else if (currentTab === 'files') {
-    items = items.filter(i => i.type === 'file');
-  } else if (currentTab === 'favs') {
-    items = [...favs].map(id => {
-      const found = allResults.find(i => i.objectID === id);
-      return found || { type: 'fav-ghost', objectID: id };
-    }).filter(Boolean);
-  }
-
-  const q = currentQuery.toLowerCase();
-
-  if (q && currentTab !== 'favs') {
-    items = items
-      .map(item => ({ item, score: scoreItem(item, q) }))
-      .filter(({ score }) => score > 0)
-      .sort((a, b) => b.score - a.score)
-      .map(({ item }) => item);
-  }
-
-  items = sortItems(items, sortSelect.value);
-
-  const perPage = settings.perPage;
-  const shown = items.slice(0, perPage);
-
-  if (items.length === 0) {
-    resultsGrid.style.display = 'grid';
-    emptyState.style.display = 'none';
-    loadingState.style.display = 'none';
-    resultsGrid.innerHTML = `
-      <div class="no-results">
-        <div class="icon">&#128270;</div>
-        <p style="color:var(--text-muted)">No results. Try different keywords or switch tabs.</p>
-      </div>`;
-    return;
-  }
-
-  resultsGrid.style.display = 'grid';
-  emptyState.style.display = 'none';
-  loadingState.style.display = 'none';
-
-  resultsGrid.innerHTML = shown.map(item => renderCard(item)).join('');
-
-  if (items.length > perPage) {
-    resultsGrid.innerHTML += `
-      <div class="no-results">
-        <p style="color:var(--text-muted)">Showing ${perPage} of ${items.length}. Increase <em>Results per page</em> in Settings to see more.</p>
-      </div>`;
-  }
-
-  resultsGrid.querySelectorAll('.card-btn[data-action="copy"]').forEach(btn => {
-    btn.addEventListener('click', e => {
-      e.stopPropagation();
-      copyUrl(btn);
-    });
-  });
-
-  resultsGrid.querySelectorAll('.card-btn[data-action="open"]').forEach(btn => {
-    btn.addEventListener('click', e => {
-      e.stopPropagation();
-      window.open(btn.dataset.url, '_blank', 'noopener');
-    });
-  });
-
-  resultsGrid.querySelectorAll('.fav-btn-overlay').forEach(btn => {
-    btn.addEventListener('click', e => {
-      e.stopPropagation();
-      toggleFav(btn);
-    });
-  });
-
-  resultsGrid.querySelectorAll('.matching-file-link').forEach(a => {
-    a.addEventListener('click', e => {
-      e.stopPropagation();
-    });
-  });
-
-  resultsGrid.querySelectorAll('.card').forEach(card => {
-    card.addEventListener('click', () => {
-      const url = card.dataset.url;
-      if (url) window.open(url, '_blank', 'noopener');
-    });
-  });
-}
-
-function renderCard(item) {
-  if (item.type === 'fav-ghost') {
-    const url = albumUrl(item.objectID);
-
-    return `
-    <div class="card" data-url="${url}" data-id="${item.objectID}">
-      <div class="card-thumb" style="background:${gradientFor(item.objectID)}">
-        <span class="card-thumb-inner">&#9650;</span>
-        <div class="thumb-overlay"></div>
-        <span class="card-type-badge badge-album">Album</span>
-        <button class="fav-btn-overlay is-fav" data-id="${item.objectID}" title="Remove from favourites">&#9829;</button>
-      </div>
-      <div class="card-body">
-        <div class="card-title" style="color:var(--text-muted);font-style:italic">${escHtml(item.objectID)}</div>
-        <div class="card-files"><span>Favourited album</span></div>
-      </div>
-      <div class="card-actions">
-        <button class="card-btn" data-action="copy" data-url="${url}">&#128203; Copy</button>
-        <button class="card-btn primary" data-action="open" data-url="${url}">&#8594; Open</button>
-      </div>
-    </div>`;
-  }
-
-  const isAlbum = item.type === 'album';
-  const url = albumUrl(item.objectID);
-  const isFav = favs.has(item.objectID);
-  const sizeStr = item.total_size || item.size || '';
-  const fileStr = item.file_count != null ? `${item.file_count} files` : '';
-  const dateStr = formatDate(item.album_date || item.date);
-  const grad = gradientFor(item.objectID);
-  const icon = isAlbum ? '&#128190;' : '&#128196;';
-  const title = escHtml(item.album_title || item.title || item.name || item.objectID);
-
-  let matchingBlock = '';
-
-  if (!isAlbum && item.matching_files?.length) {
-    const MAX_SHOW = 3;
-    const shown = item.matching_files.slice(0, MAX_SHOW);
-    const extra = item.matching_files.length - shown.length;
-
-    const chips = shown.map(f => {
-      const furl = fileUrl(f.id);
-      return `<a class="matching-file-link" href="${furl}" target="_blank" rel="noopener" data-url="${furl}" title="Open file: ${escHtml(f.name)}">&#128196; ${escHtml(f.name)}</a>`;
-    }).join('');
-
-    const more = extra > 0
-      ? `<span class="matching-file-more">+${extra} more file${extra === 1 ? '' : 's'} in album</span>`
-      : '';
-
-    matchingBlock = `<div class="card-matching-files">${chips}${more}</div>`;
-  }
-
-  return `
-  <div class="card" data-url="${url}" data-id="${item.objectID}" style="cursor:pointer">
-    <div class="card-thumb" style="background:${grad}">
-      <span class="card-thumb-inner">${icon}</span>
-      <div class="thumb-overlay"></div>
-      <span class="card-type-badge ${isAlbum ? 'badge-album' : 'badge-file'}">${isAlbum ? 'Album' : 'File match'}</span>
-      <button class="fav-btn-overlay ${isFav ? 'is-fav' : ''}" data-id="${item.objectID}"
-        title="${isFav ? 'Remove from favourites' : 'Add to favourites'}">${isFav ? '&#9829;' : '&#9825;'}</button>
-    </div>
-    <div class="card-body">
-      <div class="card-title">${title}</div>
-      <div class="card-files">
-        ${fileStr ? `<span>&#128190; ${fileStr}</span>` : ''}
-        ${sizeStr ? `<span>&#128194; ${escHtml(sizeStr)}</span>` : ''}
-        ${dateStr ? `<span>&#128336; ${escHtml(dateStr)}</span>` : ''}
-      </div>
-      ${matchingBlock}
-    </div>
-    <div class="card-actions">
-      <button class="card-btn" data-action="copy" data-url="${url}">&#128203; Copy</button>
-      <button class="card-btn primary" data-action="open" data-url="${url}">&#8594; Open</button>
-    </div>
-  </div>`;
-}
-
-function scoreItem(item, q) {
-  const title = (item.album_title || item.title || item.name || '').toLowerCase();
-  const fnames = (item.matching_files || []).map(f => (f.name || '').toLowerCase());
-  const words = q.trim().split(/\s+/).filter(Boolean);
-
-  if (title === q) return 4000;
-  if (title.startsWith(q)) return 3000 + (1 - title.length / 500);
-  if (words.every(w => title.includes(w))) return 2000 + wordOverlapScore(title, words);
-
-  const combined = [title, ...fnames].join(' ');
-  if (words.every(w => combined.includes(w))) return 1000 + wordOverlapScore(combined, words);
-
-  if (fuzzySeq(title, q)) return 500;
-  if (words.some(w => w.length > 1 && title.includes(w))) return 100;
-  if (fnames.some(fn => words.some(w => w.length > 1 && fn.includes(w)))) return 50;
-
-  return 0;
-}
-
-function wordOverlapScore(text, words) {
-  return words.reduce((acc, w) => acc + (text.includes(w) ? w.length : 0), 0) / (text.length + 1);
-}
-
-function fuzzySeq(text, query) {
-  let qi = 0;
-
-  for (let ti = 0; ti < text.length && qi < query.length; ti++) {
-    if (text[ti] === query[qi]) qi++;
-  }
-
-  return qi === query.length;
-}
-
-function sortItems(items, mode) {
-  return [...items].sort((a, b) => {
-    switch (mode) {
-      case 'date-desc': return parseDate(b.album_date || b.date) - parseDate(a.album_date || a.date);
-      case 'date-asc': return parseDate(a.album_date || a.date) - parseDate(b.album_date || b.date);
-      case 'size-desc': return parseSize(b.total_size || b.size) - parseSize(a.total_size || a.size);
-      case 'size-asc': return parseSize(a.total_size || a.size) - parseSize(b.total_size || b.size);
-      case 'files-desc': return (b.file_count || 0) - (a.file_count || 0);
-      case 'files-asc': return (a.file_count || 0) - (b.file_count || 0);
-      case 'alpha': return (a.album_title || a.title || a.name || '').localeCompare(b.album_title || b.title || b.name || '');
-      default: return 0;
+    function decodeHtml(value) {
+      const textarea = document.createElement("textarea");
+      textarea.innerHTML = value || "";
+      return textarea.value;
     }
-  });
-}
 
-function parseDate(str) {
-  if (!str) return 0;
+    function escHtml(value) {
+      if (!value) return "";
 
-  const m = String(str).match(/(\d{2}):(\d{2}):(\d{2})\s+(\d{2})\/(\d{2})\/(\d{4})/);
-
-  if (m) {
-    return new Date(+m[6], +m[5] - 1, +m[4], +m[1], +m[2], +m[3]).getTime();
-  }
-
-  const simple = Date.parse(str);
-  return Number.isNaN(simple) ? 0 : simple;
-}
-
-function parseSize(str) {
-  if (!str) return 0;
-
-  const m = String(str).match(/([\d.]+)\s*(KB|MB|GB|TB)/i);
-  if (!m) return 0;
-
-  const n = parseFloat(m[1]);
-  const units = { kb: 1e3, mb: 1e6, gb: 1e9, tb: 1e12 };
-
-  return n * (units[m[2].toLowerCase()] || 1);
-}
-
-function toggleFav(btn) {
-  const id = btn.dataset.id;
-
-  if (favs.has(id)) {
-    favs.delete(id);
-    btn.classList.remove('is-fav');
-    btn.innerHTML = '&#9825;';
-    btn.title = 'Add to favourites';
-  } else {
-    favs.add(id);
-    btn.classList.add('is-fav');
-    btn.innerHTML = '&#9829;';
-    btn.title = 'Remove from favourites';
-  }
-
-  LS.set('bunkr_favs', [...favs]);
-  updateFavCount();
-}
-
-function updateFavCount() {
-  countFavs.textContent = favs.size;
-}
-
-function addToHistory(q) {
-  history = [q, ...history.filter(h => h !== q)].slice(0, 30);
-  LS.set('bunkr_history', history);
-}
-
-function showHistory(q) {
-  const matches = history
-    .filter(h => h !== q && h.toLowerCase().includes(q.toLowerCase()))
-    .slice(0, 6);
-
-  const recent = history
-    .filter(h => h !== q)
-    .slice(0, 6);
-
-  const show = matches.length ? matches : recent;
-
-  if (!show.length) {
-    historyPanel.style.display = 'none';
-    return;
-  }
-
-  historyPanel.innerHTML = show.map(h =>
-    `<div class="history-item" data-q="${escHtml(h)}">
-      <span class="history-icon">&#128336;</span>
-      <span>${escHtml(h)}</span>
-    </div>`
-  ).join('') + `<div class="history-clear" id="histClear">Clear history</div>`;
-
-  historyPanel.style.display = 'block';
-
-  historyPanel.querySelectorAll('.history-item').forEach(el => {
-    el.addEventListener('mousedown', () => {
-      searchInput.value = el.dataset.q;
-      doSearch(el.dataset.q);
-      hideHistory();
-    });
-  });
-
-  historyPanel.querySelector('#histClear')?.addEventListener('mousedown', () => {
-    history = [];
-    LS.set('bunkr_history', []);
-    hideHistory();
-  });
-}
-
-function hideHistory() {
-  historyPanel.style.display = 'none';
-}
-
-function copyUrl(btn) {
-  const url = btn.dataset.url;
-
-  navigator.clipboard.writeText(url).then(() => {
-    const orig = btn.innerHTML;
-    btn.innerHTML = '&#10003; Copied';
-    btn.classList.add('copied');
-
-    setTimeout(() => {
-      btn.innerHTML = orig;
-      btn.classList.remove('copied');
-    }, 1500);
-  }).catch(() => {
-    prompt('Copy this URL:', url);
-  });
-}
-
-function albumUrl(id) {
-  return `https://bunkr.si/a/${id}`;
-}
-
-function fileUrl(id) {
-  return `https://bunkr.si/f/${id}`;
-}
-
-function formatDate(str) {
-  if (!str) return '';
-
-  const m = String(str).match(/(\d{2})\/(\d{2})\/(\d{4})/);
-
-  if (!m) {
-    return String(str);
-  }
-
-  const d = new Date(+m[3], +m[2] - 1, +m[1]);
-  const now = new Date();
-  const diff = (now - d) / 1000;
-
-  if (diff < 86400) return 'Today';
-  if (diff < 172800) return 'Yesterday';
-  if (diff < 604800) return `${Math.floor(diff / 86400)}d ago`;
-  if (diff < 2592000) return `${Math.floor(diff / 604800)}w ago`;
-  if (diff < 31536000) return `${Math.floor(diff / 2592000)}mo ago`;
-
-  return `${Math.floor(diff / 31536000)}y ago`;
-}
-
-function gradientFor(id) {
-  const safe = String(id || 'bunkr');
-
-  let h1 = 0;
-  let h2 = 0;
-
-  for (let i = 0; i < safe.length; i++) {
-    const c = safe.charCodeAt(i);
-
-    if (i % 2 === 0) {
-      h1 = (h1 * 31 + c) % 360;
-    } else {
-      h2 = (h2 * 31 + c) % 360;
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
     }
-  }
 
-  return `linear-gradient(135deg, hsl(${h1},40%,18%) 0%, hsl(${h2},45%,13%) 100%)`;
-}
+    function parseDate(str) {
+      if (!str) return 0;
 
-function escHtml(str) {
-  if (!str) return '';
+      const text = String(str);
 
-  return String(str)
-    .replace(/&/g,'&amp;')
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;');
-}
+      const m = text.match(/(\d{2}):(\d{2}):(\d{2})\s+(\d{2})\/(\d{2})\/(\d{4})/);
+      if (m) {
+        return new Date(+m[6], +m[5] - 1, +m[4], +m[1], +m[2], +m[3]).getTime();
+      }
 
-function updateCounts(albums, files) {
-  const total = albums.length + files.length;
+      const parsed = Date.parse(text);
+      return Number.isNaN(parsed) ? 0 : parsed;
+    }
 
-  countAll.textContent = total > 999 ? `${(total / 1000).toFixed(1)}k` : total;
-  countAlbums.textContent = albums.length > 999 ? `${(albums.length / 1000).toFixed(1)}k` : albums.length;
-  countFiles.textContent = files.length > 999 ? `${(files.length / 1000).toFixed(1)}k` : files.length;
-}
+    function parseSize(str) {
+      if (!str) return 0;
 
-function showEmpty() {
-  emptyState.style.display = 'flex';
-  loadingState.style.display = 'none';
-  errorState.style.display = 'none';
-  resultsGrid.style.display = 'none';
-}
+      const m = String(str).match(/([\d.]+)\s*(KB|MB|GB|TB)/i);
+      if (!m) return 0;
 
-function showLoading() {
-  emptyState.style.display = 'none';
-  loadingState.style.display = 'flex';
-  errorState.style.display = 'none';
-  resultsGrid.style.display = 'none';
-}
+      const value = parseFloat(m[1]);
+      const unit = m[2].toLowerCase();
 
-function hideLoading() {
-  loadingState.style.display = 'none';
-}
+      const units = {
+        kb: 1e3,
+        mb: 1e6,
+        gb: 1e9,
+        tb: 1e12
+      };
 
-function showError(msg) {
-  loadingState.style.display = 'none';
-  emptyState.style.display = 'none';
-  resultsGrid.style.display = 'none';
-  resultsGrid.innerHTML = '';
-  allResults = [];
-  updateCounts([], []);
-  errorState.style.display = 'flex';
-  errorMsg.textContent = msg;
-}
+      return value * (units[unit] || 1);
+    }
 
-function applyTheme() {
-  document.body.classList.toggle('theme-light', settings.theme === 'light');
-  $('themeBtn').innerHTML = settings.theme === 'light' ? '&#9790;' : '&#9788;';
-}
+    function formatDate(str) {
+      if (!str) return "";
 
-function toggleTheme() {
-  settings.theme = settings.theme === 'dark' ? 'light' : 'dark';
-  applyTheme();
-  saveSettings();
-}
+      const text = String(str);
+      const m = text.match(/(\d{2})\/(\d{2})\/(\d{4})/);
 
-function saveSettings() {
-  LS.set('bunkr_settings', settings);
-}
+      if (!m) return text;
 
-init();
-</script>
+      const d = new Date(+m[3], +m[2] - 1, +m[1]);
+      const now = new Date();
+      const diff = (now - d) / 1000;
+
+      if (diff < 86400) return "Today";
+      if (diff < 172800) return "Yesterday";
+      if (diff < 604800) return `${Math.floor(diff / 86400)}d ago`;
+      if (diff < 2592000) return `${Math.floor(diff / 604800)}w ago`;
+      if (diff < 31536000) return `${Math.floor(diff / 2592000)}mo ago`;
+
+      return `${Math.floor(diff / 31536000)}y ago`;
+    }
+
+    function gradientFor(id) {
+      const safe = String(id || "bunkr");
+      let h1 = 0;
+      let h2 = 0;
+
+      for (let i = 0; i < safe.length; i++) {
+        const c = safe.charCodeAt(i);
+
+        if (i % 2 === 0) {
+          h1 = (h1 * 31 + c) % 360;
+        } else {
+          h2 = (h2 * 31 + c) % 360;
+        }
+      }
+
+      return `linear-gradient(135deg, hsl(${h1},40%,18%) 0%, hsl(${h2},45%,13%) 100%)`;
+    }
+
+    function fuzzySeq(text, query) {
+      let qi = 0;
+
+      for (let ti = 0; ti < text.length && qi < query.length; ti++) {
+        if (text[ti] === query[qi]) qi++;
+      }
+
+      return qi === query.length;
+    }
+
+    init();
+  </script>
 </body>
 </html>
