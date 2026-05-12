@@ -1449,32 +1449,6 @@ async function trySource(source, q, signal, viaProxy) {
     };
   }
 }
-
-    const data = await res.json().catch(() => null);
-
-    if (!isSearchShape(data)) {
-      return {
-        ok: false,
-        source: label,
-        error: 'Unexpected response shape',
-      };
-    }
-
-    return {
-      ok: true,
-      source: label,
-      data,
-      count: hitCount(data),
-    };
-  } catch (e) {
-    return {
-      ok: false,
-      source: label,
-      error: e.name === 'AbortError' ? 'Timed out' : (e.message || 'Failed'),
-    };
-  }
-}
-
 async function searchAllSources(q, signal) {
   const attempts = [
     ...UPSTREAM_SOURCES.map(source => trySource(source, q, signal, false)),
