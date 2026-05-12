@@ -1194,27 +1194,57 @@ function flashButton(btn, html) {
 
 const UPSTREAM_SOURCES = [
   {
-    name: 'bunkrarchive-search',
-    url: q => `https://bunkrarchive.pythonanywhere.com/api/search?q=${encodeURIComponent(q)}`,
-  },
-  {
-    name: 'bunkr-albums-search',
-    url: q => `https://bunkr-albums.io/api/search?q=${encodeURIComponent(q)}`,
-  },
-  {
-    name: 'bunkr-albums-albums-q',
-    url: q => `https://bunkr-albums.io/api/albums?q=${encodeURIComponent(q)}`,
-  },
-  {
-    name: 'bunkr-albums-albums-search',
-    url: q => `https://bunkr-albums.io/api/albums?search=${encodeURIComponent(q)}`,
-  },
-  {
-    name: 'bunkr-explorer',
-    url: q => `https://bunkr-explorer.pages.dev/api/search?q=${encodeURIComponent(q)}`,
-  },
+    id: "bunkrarchive-search",
+    name: "BunkrArchive",
+    url: query => `https://bunkrarchive.pythonanywhere.com/api/search?q=${encodeURIComponent(query)}`,
+    viaProxy: true,
+    parser: normalizeBunkrArchiveResults
+  }
 ];
 
+function normalizeBunkrArchiveResults(data) {
+  const albumResults = Array.isArray(data?.album_results) ? data.album_results : [];
+  const fileResults = Array.isArray(data?.file_results) ? data.file_results : [];
+
+  const albums = albumResults.map(item => ({
+    type: "album",
+    objectID: item.objectID || item.id || item.album_id,
+    album_title: decodeHtml(item.album_title || item.title || "Untitled album"),
+    title: decodeHtml(item.album_title || item.title || "Untitled album"),
+    name: decodeHtml(item.album_title || item.title || "Untitled album"),
+    album_date: item.album_date || item.date || "",
+    file_count: item.file_count ?? 0,
+    total_size: item.total_size || item.size || "",
+    match_type: item.match_type || ""
+  }));
+
+  const files = fileResults.map(item => ({
+    type: "file",
+    objectID: item.objectID || item.id || item.album_id,
+    album_title: decodeHtml(item.album_title || item.title || "Untitled album"),
+    title: decodeHtml(item.album_title || item.title || "Untitled album"),
+    name: decodeHtml(item.album_title || item.title || "Untitled album"),
+    album_date: item.album_date || item.date || "",
+    file_count: item.file_count ?? 0,
+    total_size: item.total_size || item.size || "",
+    match_type: item.match_type || "",
+    matching_files: Array.isArray(item.matching_files)
+      ? item.matching_files.map(file => ({
+          ...file,
+          id: file.id || file.objectID || file.file_id || file.url || file.name,
+          name: decodeHtml(file.name || file.file_name || file.filename || "Matching file")
+        }))
+      : []
+  }));
+
+  return [...albums, ...files];
+}
+
+function decodeHtml(value) {
+  const textarea = document.createElement("textarea");
+  textarea.innerHTML = value || "";
+  return textarea.value;
+}
 function proxyUrl(upstream) {
   return `${settings.workerUrl.replace(/\/$/, '')}?url=${encodeURIComponent(upstream)}`;
 }
@@ -1383,6 +1413,42 @@ async function trySource(source, q, signal, viaProxy) {
         error: `HTTP ${res.status}`,
       };
     }
+
+    const rawData = await res.json().catch(() => null);
+
+    if (!isSearchShape(rawData)) {
+      return {
+        ok: false,
+        source: label,
+        error: 'Unexpected response shape',
+      };
+    }
+
+    const parsedData = source.parser
+      ? source.parser(rawData)
+      : rawData;
+
+    const finalData = Array.isArray(parsedData)
+      ? {
+          album_results: parsedData.filter(item => item.type === "album"),
+          file_results: parsedData.filter(item => item.type === "file")
+        }
+      : parsedData;
+
+    return {
+      ok: true,
+      source: label,
+      data: finalData,
+      count: hitCount(finalData),
+    };
+  } catch (e) {
+    return {
+      ok: false,
+      source: label,
+      error: e.name === 'AbortError' ? 'Timed out' : (e.message || 'Failed'),
+    };
+  }
+}
 
     const data = await res.json().catch(() => null);
 
